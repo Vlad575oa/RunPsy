@@ -31,9 +31,6 @@ type ObsidianTopicMapProps = {
 type GraphNode = {
   slug: string;
   title: string;
-  x: number;
-  y: number;
-  current?: boolean;
 };
 
 export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps) {
@@ -41,7 +38,6 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
   const [query, setQuery] = useState("");
   const [collapsedExplorer, setCollapsedExplorer] = useState(false);
   const [openCategories, setOpenCategories] = useState(() => new Set(categories.map((category) => category.slug)));
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const { resolvedTheme, setTheme } = useTheme();
 
   const selectedArticle = articles.find((article) => article.slug === selectedSlug) ?? articles[0];
@@ -60,7 +56,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
   }, [articles, query]);
 
   const markdown = useMemo(() => (selectedArticle ? articleToMarkdown(selectedArticle) : ""), [selectedArticle]);
-  const graphNodes = useMemo(() => buildGraphNodes(selectedArticle, articles), [selectedArticle, articles]);
+  const linkedNotes = useMemo(() => buildLinkedNotes(selectedArticle, articles), [selectedArticle, articles]);
 
   function toggleCategory(slug: string) {
     setOpenCategories((current) => {
@@ -240,60 +236,9 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
           </AnimatePresence>
         </div>
 
-        <aside className="border-l border-[rgba(255,255,255,0.45)] bg-white/45 backdrop-blur-2xl">
-          <div className="grid min-h-[calc(100vh-74px)] grid-rows-[minmax(280px,1fr)_minmax(280px,1fr)]">
-            <section className="border-b border-[rgba(255,255,255,0.45)] p-5">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <GitFork className="h-4 w-4 text-[var(--accent)]" />
-                  <h2 className="text-sm font-semibold">Current Graph</h2>
-                </div>
-                <span className="text-xs text-[var(--text-soft)]">{graphNodes.length} nodes</span>
-              </div>
-
-              <div className="relative h-[260px] overflow-hidden rounded-3xl border border-[rgba(255,255,255,0.55)] bg-white/38 backdrop-blur-xl">
-                <svg viewBox="0 0 320 240" className="h-full w-full">
-                  {graphNodes.slice(1).map((node) => (
-                    <motion.line
-                      key={`${selectedArticle.slug}-${node.slug}`}
-                      x1="160"
-                      y1="120"
-                      x2={node.x}
-                      y2={node.y}
-                      stroke={hoveredNode === node.slug ? "rgba(103,232,249,.75)" : "rgba(255,255,255,.16)"}
-                      strokeWidth={hoveredNode === node.slug ? 1.7 : 1}
-                    />
-                  ))}
-                  {graphNodes.map((node) => (
-                    <motion.g
-                      key={node.slug}
-                      drag={!node.current}
-                      dragMomentum={false}
-                      whileHover={{ scale: 1.08 }}
-                      onHoverStart={() => setHoveredNode(node.slug)}
-                      onHoverEnd={() => setHoveredNode(null)}
-                      onClick={() => !node.current && setSelectedSlug(node.slug)}
-                      className="cursor-pointer"
-                    >
-                      <motion.circle
-                        cx={node.x}
-                        cy={node.y}
-                        r={node.current ? 19 : 12}
-                        fill={node.current ? "rgba(103,232,249,.25)" : "rgba(251,191,36,.16)"}
-                        stroke={node.current ? "rgb(103,232,249)" : "rgba(251,191,36,.75)"}
-                        strokeWidth="1.5"
-                      />
-                      <foreignObject x={node.x - 48} y={node.y + 16} width="96" height="40">
-                        <p className="line-clamp-2 text-center text-[9px] leading-3 text-[var(--text-soft)]">{node.title}</p>
-                      </foreignObject>
-                    </motion.g>
-                  ))}
-                </svg>
-              </div>
-            </section>
-
-            <section className="p-5">
-              <div className="rounded-3xl border border-[rgba(255,255,255,0.55)] bg-white/42 p-5 shadow-[0_24px_50px_rgba(111,45,26,0.12)] backdrop-blur-2xl">
+        <aside className="border-l border-[rgba(255,255,255,0.45)] bg-white/45 p-5 backdrop-blur-2xl">
+          <section className="sticky top-[96px]">
+            <div className="rounded-3xl border border-[rgba(255,255,255,0.55)] bg-white/42 p-5 shadow-[0_24px_50px_rgba(111,45,26,0.12)] backdrop-blur-2xl">
                 <div className="flex items-center gap-2">
                   <div className="grid h-9 w-9 place-items-center rounded-2xl bg-[rgba(207,107,62,0.14)] text-[var(--accent-deep)]">
                     <Sparkles className="h-4 w-4" />
@@ -319,7 +264,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                       Linked notes
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {graphNodes.slice(1, 5).map((node) => (
+                      {linkedNotes.slice(0, 4).map((node) => (
                         <button
                           key={node.slug}
                           type="button"
@@ -333,8 +278,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                   </div>
                 </div>
               </div>
-            </section>
-          </div>
+          </section>
         </aside>
       </div>
     </section>
@@ -365,31 +309,12 @@ ${article.quiz.questions.map((question) => `- **${question.question}** ${questio
 `;
 }
 
-function buildGraphNodes(article: Article, articles: Article[]): GraphNode[] {
-  const related = articles
+function buildLinkedNotes(article: Article, articles: Article[]): GraphNode[] {
+  return articles
     .filter((candidate) => candidate.slug !== article.slug && (article.relatedSlugs.includes(candidate.slug) || candidate.category === article.category))
-    .slice(0, 7);
-
-  const nodes: GraphNode[] = [
-    {
-      slug: article.slug,
-      title: article.title,
-      x: 160,
-      y: 120,
-      current: true,
-    },
-  ];
-
-  related.forEach((candidate, index) => {
-    const angle = (Math.PI * 2 * index) / Math.max(related.length, 1) - Math.PI / 2;
-    const radius = index % 2 === 0 ? 78 : 98;
-    nodes.push({
+    .slice(0, 7)
+    .map((candidate) => ({
       slug: candidate.slug,
       title: candidate.title,
-      x: 160 + Math.cos(angle) * radius,
-      y: 120 + Math.sin(angle) * radius,
-    });
-  });
-
-  return nodes;
+    }));
 }

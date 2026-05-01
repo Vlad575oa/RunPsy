@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Brain, Check, Copy, Layers3, MessageSquareText, Sparkles, Target } from "lucide-react";
 import type { ArticleInsightImpulse } from "@/types/article";
 
@@ -11,17 +11,6 @@ type InsightImpulseProps = {
 
 export function InsightImpulse({ title, impulse }: InsightImpulseProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
-  const [taken, setTaken] = useState(false);
-
-  const doneCount = impulse.checklist.filter((item) => checked[item]).length;
-  const progress = Math.round((doneCount / impulse.checklist.length) * 100);
-
-  const trackerText = useMemo(() => {
-    if (progress === 100) return "Готово: у вас есть маленькое завершенное дело, а не только прочитанная статья.";
-    if (taken) return "Материал взят в работу. Двигайтесь коротко: один пункт, одна фраза, одна пауза.";
-    return "Можно пройти чек-лист без регистрации. Он останется только на этой странице.";
-  }, [progress, taken]);
 
   async function copyPhrase(text: string, index: number) {
     try {
@@ -51,31 +40,6 @@ export function InsightImpulse({ title, impulse }: InsightImpulseProps) {
             Практика · Mint Glass
           </div>
           <p className="mt-3 text-base leading-7 text-[var(--text)]">{impulse.microAction}</p>
-          <div className="mt-4 grid gap-2">
-            {impulse.checklist.map((item) => (
-              <label key={item} className="flex items-start gap-3 rounded-xl border border-white/70 bg-white/65 px-3 py-2 text-sm leading-6 text-[var(--text-soft)]">
-                <input
-                  type="checkbox"
-                  className="mt-1 accent-[#39b98f]"
-                  checked={Boolean(checked[item])}
-                  onChange={(event) => setChecked((current) => ({ ...current, [item]: event.target.checked }))}
-                />
-                <span>{item}</span>
-              </label>
-            ))}
-          </div>
-          <div className="mt-4 rounded-xl bg-white/70 p-3 text-sm leading-6 text-[#17614f]">
-            <span className="font-semibold">Прогресс: {doneCount}/{impulse.checklist.length} ({progress}%). </span>
-            {trackerText}
-          </div>
-          <button
-            type="button"
-            onClick={() => setTaken(true)}
-            className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#207866] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#17614f]"
-          >
-            <Check className="h-4 w-4" aria-hidden="true" />
-            Взять в работу
-          </button>
         </div>
 
         <div className="rounded-2xl border border-[#c8eee4]/70 bg-[#0f3b35] p-5 text-white shadow-sm">
@@ -123,7 +87,7 @@ export function InsightImpulse({ title, impulse }: InsightImpulseProps) {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--line)] bg-white/72 p-5 shadow-sm backdrop-blur-md">
+        <div className="rounded-2xl border border-[var(--line)] bg-white/72 p-5 shadow-sm backdrop-blur-md md:col-span-2">
           <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent-deep)]">
             <Layers3 className="h-4 w-4" aria-hidden="true" />
             Сценарий 50/50
@@ -135,10 +99,14 @@ export function InsightImpulse({ title, impulse }: InsightImpulseProps) {
           <p className="mt-4 rounded-xl bg-[var(--bg)] p-3 text-sm leading-6 text-[var(--text-soft)]">{impulse.twoSides.bridge}</p>
         </div>
 
-        <div className="rounded-2xl border border-[#b7ded0] bg-[radial-gradient(circle_at_20%_20%,rgba(186,247,218,0.72),transparent_35%),linear-gradient(135deg,rgba(15,59,53,0.96),rgba(32,120,102,0.82))] p-5 text-white shadow-sm">
-          <p className="text-sm font-bold text-[#bff4df]">Визуальный якорь</p>
-          <h3 className="mt-3 font-serif text-2xl">{impulse.visualMetaphor.title}</h3>
-          <p className="mt-3 text-sm leading-6 text-white/80">{impulse.visualMetaphor.description}</p>
+        <div className="rounded-2xl border border-[#b7ded0] bg-[radial-gradient(circle_at_8%_50%,rgba(186,247,218,0.56),transparent_28%),linear-gradient(135deg,rgba(15,59,53,0.96),rgba(32,120,102,0.84))] p-5 text-white shadow-sm md:col-span-2">
+          <div className="grid gap-3 md:grid-cols-[180px_1fr] md:items-center">
+            <p className="text-sm font-bold uppercase tracking-[0.12em] text-[#bff4df]">Визуальный якорь</p>
+            <div>
+              <h3 className="font-serif text-2xl">{impulse.visualMetaphor.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/80">{impulse.visualMetaphor.description}</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
