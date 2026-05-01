@@ -1,120 +1,60 @@
 import Link from "next/link";
-import { articles, siteFacts, topTopics, weekOnePlan } from "@/lib/content";
+import { ArticleCard } from "@/components/blog/article-card";
+import { NewsletterCTA } from "@/components/sections/newsletter-cta";
+import { categories, getPublishedArticles } from "@/lib/content";
 
-export default function Home() {
+export default function HomePage() {
+  const articles = getPublishedArticles();
+
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-6 py-10 md:py-14">
-      <section className="rounded-3xl border border-[var(--line)] bg-white p-8 md:p-12">
-        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[var(--accent)]">
-          SERP-анализ RU · 30.04.2026
-        </p>
-        <h1 className="mt-4 max-w-3xl text-4xl leading-tight md:text-5xl">
-          Психология отношений: кризисные гайды, сценарии разговоров и опора на факты из открытой выдачи
-        </h1>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-[var(--text-soft)]">
-          Мы строим контент вокруг горячих запросов: отдаление, расставание,
-          токсичность, границы. Утверждения о метриках без платных SEO-баз маркируем
-          как гипотезы, а не как точные цифры.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/topics/psihologiya-otnosheniy"
-            className="rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-          >
-            Открыть pillar-страницу
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-9 px-6 py-10">
+      <section className="rounded-2xl border border-[var(--line)] bg-white p-5 shadow-sm md:p-6">
+        <form action="/articles" className="grid gap-3 md:grid-cols-[1fr_auto]">
+          <label className="sr-only" htmlFor="home-search">Поиск по статьям</label>
+          <input
+            id="home-search"
+            name="q"
+            type="search"
+            placeholder="Найти статью: расставание, тревога, границы..."
+            className="min-h-12 w-full rounded-full border border-[var(--line)] bg-[var(--bg)] px-5 text-base outline-none transition placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:bg-white"
+          />
+          <button className="min-h-12 rounded-full bg-[var(--accent)] px-7 text-sm font-semibold text-white transition hover:opacity-90" type="submit">
+            Искать
+          </button>
+        </form>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <Link
+              key={category.slug}
+              href={`/categories/${category.slug}`}
+              className="rounded-full border border-[var(--line)] bg-[var(--bg)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition hover:border-[var(--accent)] hover:bg-white"
+            >
+              {category.title}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-3xl">Статьи для быстрого старта</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-soft)]">
+              Выберите тему, которая ближе к вашей ситуации. Внутри каждой статьи есть содержание, ответы на частые вопросы и короткий тест.
+            </p>
+          </div>
+          <Link href="/articles" className="text-sm font-semibold text-[var(--accent-deep)] underline-offset-2 hover:underline">
+            Смотреть все
           </Link>
-          <Link
-            href="/consultation"
-            className="rounded-full border border-[var(--line)] px-6 py-3 text-sm font-semibold text-[var(--accent-deep)] transition hover:bg-[var(--bg-soft)]"
-          >
-            Диагностика за 20 минут
-          </Link>
         </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        <InfoBlock title="Факт (SERP)" tone="ok" items={siteFacts.fact} />
-        <InfoBlock title="Наблюдение" tone="warn" items={siteFacts.observation} />
-        <InfoBlock title="Гипотеза/оценка" tone="accent" items={siteFacts.hypothesis} />
-      </section>
-
-      <section className="rounded-3xl border border-[var(--line)] bg-white p-8">
-        <h2 className="text-3xl">Приоритетные кластеры и монетизация</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {topTopics.map((topic) => (
-            <article key={topic.title} className="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--accent)]">
-                {topic.intent}
-              </p>
-              <h3 className="mt-2 text-xl">{topic.title}</h3>
-              <p className="mt-2 text-sm text-[var(--text-soft)]">Ключ: {topic.key}</p>
-              <p className="mt-2 text-sm font-medium text-[var(--accent-deep)]">
-                Продукт: {topic.monetization}
-              </p>
-            </article>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {articles.slice(0, 6).map((article) => (
+            <ArticleCard key={article.slug} article={article} />
           ))}
         </div>
       </section>
 
-      <section className="rounded-3xl border border-[var(--line)] bg-white p-8">
-        <h2 className="text-3xl">Первые статьи (high-intent)</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {articles.map((article) => (
-            <article key={article.slug} className="rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--accent)]">
-                {article.cluster}
-              </p>
-              <h3 className="mt-2 text-xl leading-tight">{article.title}</h3>
-              <p className="mt-3 text-sm leading-6 text-[var(--text-soft)]">{article.description}</p>
-              <Link
-                href={`/blog/${article.slug}`}
-                className="mt-4 inline-flex text-sm font-semibold text-[var(--accent-deep)] underline-offset-2 hover:underline"
-              >
-                Читать статью
-              </Link>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-[var(--line)] bg-white p-8">
-        <h2 className="text-3xl">Первые действия на 7 дней</h2>
-        <ol className="mt-6 space-y-3 text-sm leading-6 text-[var(--text-soft)]">
-          {weekOnePlan.map((item) => (
-            <li key={item} className="rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3">
-              {item}
-            </li>
-          ))}
-        </ol>
-      </section>
+      <NewsletterCTA />
     </div>
-  );
-}
-
-function InfoBlock({
-  title,
-  items,
-  tone,
-}: {
-  title: string;
-  items: string[];
-  tone: "ok" | "warn" | "accent";
-}) {
-  const toneClass =
-    tone === "ok"
-      ? "text-[var(--ok)]"
-      : tone === "warn"
-        ? "text-[var(--warn)]"
-        : "text-[var(--accent-deep)]";
-
-  return (
-    <article className="rounded-2xl border border-[var(--line)] bg-white p-6">
-      <h2 className={`text-xl ${toneClass}`}>{title}</h2>
-      <ul className="mt-4 space-y-2 text-sm leading-6 text-[var(--text-soft)]">
-        {items.map((item) => (
-          <li key={item}>• {item}</li>
-        ))}
-      </ul>
-    </article>
   );
 }

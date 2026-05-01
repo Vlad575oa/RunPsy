@@ -1,26 +1,21 @@
-import type { Metadata } from "next";
+import { buildMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Дисклеймер",
-  description: "Границы ответственности и назначение контента проекта RunPsy.",
-};
+export const metadata = buildMetadata({
+  title: "Дисклеймер | RunPsy",
+  description: "Ограничения контента: статьи не заменяют терапию и медицинскую помощь.",
+  path: "/disclaimer",
+});
 
 export default function DisclaimerPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-10">
-      <h1 className="text-4xl">Дисклеймер</h1>
-
-      <section className="mt-8 rounded-2xl border border-[var(--line)] bg-white p-6 text-sm leading-6 text-[var(--text-soft)]">
-        <p>
-          Материалы RunPsy носят информационный и образовательный характер.
-          Они не являются медицинским диагнозом, индивидуальной психотерапией
-          или экстренной помощью.
-        </p>
-        <p className="mt-4">
-          Если ваше состояние быстро ухудшается или есть риск вреда себе/другим,
-          обратитесь в экстренные службы и к профильным специалистам очно.
-        </p>
-      </section>
+    <div className="mx-auto w-full max-w-4xl px-6 py-10">
+      <h1 className="font-serif text-4xl">Дисклеймер</h1>
+      <p className="mt-4 text-sm leading-7 text-[var(--text-soft)]">
+        Контент RunPsy носит информационный характер и не является психотерапией, диагностикой или медицинской рекомендацией.
+      </p>
+      <p className="mt-3 text-sm leading-7 text-[var(--text-soft)]">
+        Если состояние кажется интенсивным, длительным или небезопасным, обратитесь к квалифицированному специалисту и экстренным службам в вашем регионе.
+      </p>
     </div>
   );
 }

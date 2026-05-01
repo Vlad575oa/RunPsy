@@ -1,20 +1,15 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --bg: #fffdf8;
-  --bg-soft: #f5efe4;
-  --text: #23201d;
-  --text-soft: #5b554f;
-  --line: #e2d8c6;
-  --accent: #cf6a3c;
+  --bg-soft: #f6efe4;
+  --text: #25211d;
+  --text-soft: #615951;
+  --line: #e7dbc8;
+  --accent: #cf6b3e;
   --accent-deep: #6f2d1a;
-  --ok: #2f6d55;
-  --warn: #b3541e;
-}
-
-@theme inline {
-  --font-sans: var(--font-manrope);
-  --font-serif: var(--font-merriweather);
 }
 
 * {
@@ -23,12 +18,12 @@
 
 body {
   margin: 0;
-  font-family: var(--font-manrope), sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at 0% 0%, #ffe9db 0%, transparent 35%),
-    radial-gradient(circle at 100% 0%, #ffe8ce 0%, transparent 28%),
+    radial-gradient(circle at 8% 0%, #ffe8d4 0%, transparent 30%),
+    radial-gradient(circle at 95% 0%, #ffe9cd 0%, transparent 24%),
     var(--bg);
+  font-family: var(--font-manrope), sans-serif;
 }
 
 h1,
@@ -39,7 +34,9 @@ h4 {
   letter-spacing: -0.01em;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }

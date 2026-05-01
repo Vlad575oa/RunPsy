@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Manrope, Merriweather } from "next/font/google";
-import { SiteShell } from "@/components/site-shell";
+import { Lora, Manrope, Merriweather } from "next/font/google";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -10,18 +12,18 @@ const manrope = Manrope({
 
 const merriweather = Merriweather({
   variable: "--font-merriweather",
+  weight: ["400", "700"],
   subsets: ["latin", "cyrillic"],
-  weight: ["300", "400", "700", "900"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin", "cyrillic"],
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://runpsy.example"),
-  title: {
-    default: "RunPsy — психология отношений без воды",
-    template: "%s | RunPsy",
-  },
-  description:
-    "Контентный проект по психологии отношений: кризисные гайды, границы, восстановление после расставания и экспертная поддержка.",
+  title: "RunPsy — психология отношений без мотивационного шума",
+  description: "Практичная психология: ясные статьи, бережные формулировки и реальные шаги.",
 };
 
 export default function RootLayout({
@@ -30,9 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={`${manrope.variable} ${merriweather.variable}`}>
-      <body>
-        <SiteShell>{children}</SiteShell>
+    <html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${merriweather.variable} ${lora.variable} h-full antialiased`}>
+      <body className="min-h-full">
+        <ThemeProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
