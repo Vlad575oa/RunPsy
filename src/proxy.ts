@@ -8,8 +8,8 @@ type Bucket = {
 
 const ARTICLE_WINDOW_MS = 60 * 1000;
 const GLOBAL_WINDOW_MS = 60 * 1000;
-const ARTICLE_LIMIT = 30;
-const GLOBAL_LIMIT = 180;
+const ARTICLE_LIMIT = 120;
+const GLOBAL_LIMIT = 600;
 
 const SUSPICIOUS_UA = [
   "python-requests",

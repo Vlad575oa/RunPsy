@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
           scriptSrc,
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: blob: https://mc.yandex.ru",
+          "frame-src https://mc.yandex.ru",
           "font-src 'self' data:",
           connectSrc,
           "frame-ancestors 'none'",

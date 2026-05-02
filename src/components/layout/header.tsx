@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useState } from "react";
 
 const nav = [
   { href: "/", label: "Главная" },
@@ -10,6 +13,8 @@ const nav = [
 ];
 
 export function Header() {
+  const [open, setOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-white/70 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
@@ -27,22 +32,32 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <details className="relative md:hidden">
-          <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--text)] [&::-webkit-details-marker]:hidden">
-            <Menu className="h-5 w-5" />
-          </summary>
-          <nav className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-white/20 bg-white/85 p-2 shadow-lg backdrop-blur-xl">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block rounded-xl px-3 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white hover:text-[var(--text)]"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </details>
+
+        <div className="relative md:hidden">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--text)]"
+            aria-label="Меню"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+
+          {open && (
+            <nav className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-white/20 bg-white/85 p-2 shadow-lg backdrop-blur-xl">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="block rounded-xl px-3 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white hover:text-[var(--text)]"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+        </div>
       </div>
     </header>
   );

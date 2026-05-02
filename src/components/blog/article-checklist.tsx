@@ -33,12 +33,12 @@ export function ArticleChecklist({ slug, title, items }: ArticleChecklistProps) 
 
   return (
     <section className="scroll-mt-24 rounded-[1.9rem] border border-[#d8eadf] bg-white p-6 shadow-[0_16px_50px_rgba(22,97,79,0.08)]">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-col gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#17614f]">Практика</p>
-          <h2 className="mt-2 font-serif text-2xl text-[#10382f]">{title}</h2>
+          <h2 className="mt-2 font-serif text-xl text-[#10382f] sm:text-2xl">{title}</h2>
         </div>
-        <div className="min-w-[160px]">
+        <div>
           <div className="flex items-center justify-between text-xs font-medium text-[var(--text-soft)]">
             <span>Прогресс</span>
             <span>{completed}/{items.length}</span>
