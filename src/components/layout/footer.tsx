@@ -33,6 +33,7 @@ export function Footer() {
             <li><Link href="/articles">Статьи</Link></li>
             <li><Link href="/topics">Карта</Link></li>
             <li><Link href="/resources">Ресурсы</Link></li>
+            <li><Link href="/glossary">Словарь</Link></li>
             <li><Link href="/contact">Контакт</Link></li>
           </ul>
         </div>
