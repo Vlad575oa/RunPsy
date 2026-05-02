@@ -201,6 +201,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <article className="mt-4 rounded-none border-y border-[var(--line)] bg-white p-6 shadow-sm sm:rounded-[2rem] sm:border md:p-8">
         <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">{article.intent}</p>
         <h1 className="mt-3 max-w-4xl font-serif text-4xl leading-[1.02] text-[var(--text)] md:text-6xl">{article.title}</h1>
+        {article.introduction && (
+          <section className="mt-8 rounded-[2rem] border border-[#e8e0d5] bg-[linear-gradient(135deg,rgba(251,244,234,0.8),rgba(255,250,245,0.95))] p-6 shadow-[0_14px_40px_rgba(111,45,26,0.07)]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Введение в проблему</p>
+            <div className="mt-4 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
+              {article.introduction.split("\n\n").map((paragraph, index) => (
+                <p key={`intro-${index}`}>{paragraph}</p>
+              ))}
+            </div>
+          </section>
+        )}
         <section className="mt-8 rounded-[2rem] border border-[#cfe3da] bg-[linear-gradient(135deg,rgba(208,247,232,0.7),rgba(255,247,238,0.95))] p-6 shadow-[0_18px_48px_rgba(23,97,79,0.10)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#17614f]">Суть за 30 секунд</p>
           <div className="mt-4 space-y-4 text-lg leading-8 text-[#1d3b34]">

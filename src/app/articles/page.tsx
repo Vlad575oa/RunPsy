@@ -63,7 +63,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         </p>
       ) : null}
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-8 grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-3">
         {filteredArticles.map((article) => (
           <ArticleCard key={article.slug} article={article} />
         ))}

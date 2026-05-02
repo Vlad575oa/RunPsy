@@ -38,7 +38,8 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
   const [selectedSlug, setSelectedSlug] = useState(articles[0]?.slug ?? "");
   const [query, setQuery] = useState("");
   const [collapsedExplorer, setCollapsedExplorer] = useState(false);
-  const [openCategories, setOpenCategories] = useState(() => new Set(categories.map((category) => category.slug)));
+  const [openCategories, setOpenCategories] = useState(() => new Set<string>());
+  const [mobileView, setMobileView] = useState<"explorer" | "article">("explorer");
   const { resolvedTheme, setTheme } = useTheme();
 
   const selectedArticle = articles.find((article) => article.slug === selectedSlug) ?? articles[0];
@@ -74,11 +75,30 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
 
   return (
     <section className="bg-transparent text-[var(--text)]">
+      {/* Mobile tab switcher */}
+      <div className="flex border-b border-[var(--line)] lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileView("explorer")}
+          className={`flex-1 py-3 text-sm font-semibold transition ${mobileView === "explorer" ? "border-b-2 border-[var(--accent)] text-[var(--accent-deep)]" : "text-[var(--text-soft)]"}`}
+        >
+          Категории
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileView("article")}
+          className={`flex-1 py-3 text-sm font-semibold transition ${mobileView === "article" ? "border-b-2 border-[var(--accent)] text-[var(--accent-deep)]" : "text-[var(--text-soft)]"}`}
+        >
+          Статья
+        </button>
+      </div>
+
       <div className="mx-auto grid min-h-[calc(100vh-74px)] w-full grid-cols-1 border-y border-[var(--line)] lg:grid-cols-[320px_minmax(0,1fr)_360px]">
         <aside
           className={[
             "border-r border-[rgba(255,255,255,0.45)] bg-white/45 shadow-[0_18px_40px_rgba(111,45,26,0.08)] backdrop-blur-2xl transition-all duration-300",
-            collapsedExplorer ? "hidden lg:block lg:w-[76px]" : "w-full lg:w-[320px]",
+            mobileView !== "explorer" ? "hidden lg:block" : "",
+            collapsedExplorer ? "lg:w-[76px]" : "lg:w-[320px]",
           ].join(" ")}
         >
           <div className="flex min-h-16 items-center justify-between border-b border-[rgba(255,255,255,0.45)] px-4">
@@ -149,7 +169,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                                 <button
                                   key={article.slug}
                                   type="button"
-                                  onClick={() => setSelectedSlug(article.slug)}
+                                  onClick={() => { setSelectedSlug(article.slug); setMobileView("article"); }}
                                   className={[
                                     "flex w-full items-start gap-2 rounded-xl px-3 py-2 text-left text-sm transition",
                                     article.slug === selectedArticle.slug
@@ -174,7 +194,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
           )}
         </aside>
 
-        <div className="min-w-0 bg-transparent">
+        <div className={`min-w-0 bg-transparent ${mobileView !== "article" ? "hidden lg:block" : ""}`}>
           <div className="sticky top-[73px] z-10 flex min-h-16 items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.45)] bg-white/40 px-5 backdrop-blur-2xl">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-soft)]">
@@ -238,7 +258,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
           </AnimatePresence>
         </div>
 
-        <aside className="border-l border-[rgba(255,255,255,0.45)] bg-white/45 p-5 backdrop-blur-2xl">
+        <aside className="hidden border-l border-[rgba(255,255,255,0.45)] bg-white/45 p-5 backdrop-blur-2xl lg:block">
           <section className="sticky top-[96px]">
             <div className="rounded-3xl border border-[rgba(255,255,255,0.55)] bg-white/42 p-5 shadow-[0_24px_50px_rgba(111,45,26,0.12)] backdrop-blur-2xl">
                 <div className="flex items-center gap-2">

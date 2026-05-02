@@ -65,6 +65,7 @@ export type Article = {
   intent: "кризисный" | "эмоциональный" | "информационный";
   cta: string;
   safetyNote?: string;
+  introduction?: string;
   relatedSlugs: string[];
   insightImpulse: ArticleInsightImpulse;
   sections: ArticleSection[];

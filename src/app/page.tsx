@@ -29,12 +29,12 @@ export default async function HomePage() {
             Искать
           </button>
         </form>
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           {categories.map((category) => (
             <Link
               key={category.slug}
               href={`/categories/${category.slug}`}
-              className="rounded-full border border-[var(--line)] bg-[var(--bg)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition hover:border-[var(--accent)] hover:bg-white"
+              className="rounded-full border border-[var(--line)] bg-[var(--bg)] px-3 py-2 text-center text-xs font-semibold text-[var(--text)] transition hover:border-[var(--accent)] hover:bg-white sm:px-4 sm:text-sm"
             >
               {category.title}
             </Link>
@@ -54,7 +54,7 @@ export default async function HomePage() {
             Смотреть все
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-3">
           {articles.slice(0, 6).map((article) => (
             <ArticleCard key={article.slug} article={article} />
           ))}
