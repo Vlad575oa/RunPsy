@@ -1,10 +1,11 @@
 import { ArticleCard } from "@/components/blog/article-card";
-import { categories, getPublishedArticles } from "@/lib/content";
+import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
-  title: "Статьи по психологии отношений | RunPsy",
-  description: "Практичные статьи о тревоге, границах, отношениях и восстановлении.",
+  title: "Статьи по психологии отношений: 250 материалов | RunPsy",
+  description:
+    "База статей RunPsy: отношения, расставание, созависимость, тревожная привязанность, личные границы, выгорание, самооценка и семейная психология.",
   path: "/articles",
 });
 
@@ -15,7 +16,7 @@ type ArticlesPageProps = {
 export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
   const params = await searchParams;
   const query = params?.q?.trim() ?? "";
-  const articles = getPublishedArticles();
+  const [articles, categories] = await Promise.all([getPublishedArticlesFromStore(), getCategoriesFromStore()]);
   const normalizedQuery = query.toLowerCase();
   const filteredArticles = normalizedQuery
     ? articles.filter((article) => {

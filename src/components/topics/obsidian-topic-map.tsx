@@ -18,8 +18,8 @@ import {
   Sparkles,
   Sun,
 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useMemo, useState } from "react";
+import { useTheme } from "@/components/theme-provider";
 import ReactMarkdown from "react-markdown";
 import type { Article, Category } from "@/types/article";
 

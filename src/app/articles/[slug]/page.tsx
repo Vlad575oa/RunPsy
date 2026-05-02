@@ -2,12 +2,9 @@ import Script from "next/script";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArticlePracticeTools } from "@/components/blog/article-practice-tools";
-import { DisclaimerBlock } from "@/components/blog/disclaimer-block";
-import { InsightImpulse } from "@/components/blog/insight-impulse";
+import { ChevronRight } from "lucide-react";
 import { InteractiveQuiz } from "@/components/blog/interactive-quiz";
-import { RelatedArticles } from "@/components/blog/related-articles";
-import { getArticleBySlug, getPublishedArticles, getRelatedArticles } from "@/lib/content";
+import { getArticleBySlugFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 import { articleSchema, faqSchema } from "@/lib/schema";
 
@@ -16,12 +13,13 @@ type ArticlePageProps = {
 };
 
 export async function generateStaticParams() {
-  return getPublishedArticles().map((article) => ({ slug: article.slug }));
+  const articles = await getPublishedArticlesFromStore();
+  return articles.map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlugFromStore(slug);
   if (!article) return {};
 
   return buildMetadata({
@@ -33,13 +31,11 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlugFromStore(slug);
   if (!article) notFound();
 
-  const relatedArticles = getRelatedArticles(article.relatedSlugs);
-
   return (
-    <div className="mx-auto w-full max-w-6xl px-6 py-10">
+    <div className="mx-auto w-full max-w-6xl px-0 py-10 sm:px-6">
       <Script id={`schema-article-${article.slug}`} type="application/ld+json">
         {JSON.stringify(articleSchema(article))}
       </Script>
@@ -51,7 +47,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         ← Назад к статьям
       </Link>
 
-      <article className="mt-4 rounded-3xl border border-[var(--line)] bg-white p-6 shadow-sm md:p-8">
+      <article className="mt-4 rounded-none border-y border-[var(--line)] bg-white p-6 shadow-sm sm:rounded-3xl sm:border md:p-8">
         <p className="text-xs uppercase tracking-[0.08em] text-[var(--accent)]">{article.intent}</p>
         <h1 className="mt-2 font-serif text-[clamp(2rem,4vw,3.3rem)] leading-tight">{article.title}</h1>
         <p className="mt-4 max-w-[72ch] text-lg leading-8 text-[var(--text-soft)]">{article.description}</p>
@@ -70,18 +66,31 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </nav>
         </details>
 
-        <InsightImpulse title={article.title} impulse={article.insightImpulse} />
-
         <div className="mt-8 space-y-6" id="content">
           {article.sections.map((section, index) => (
-            <section id={`section-${index + 1}`} key={section.title} className="scroll-mt-24 rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-6">
-              <h2 className="font-serif text-2xl">{section.title}</h2>
+            <section
+              id={`section-${index + 1}`}
+              key={section.title}
+              className={`scroll-mt-24 rounded-2xl border p-6 ${
+                section.title === "Суть за 30 секунд"
+                  ? "border-[#b7ded0] bg-[linear-gradient(135deg,rgba(207,107,62,0.10),rgba(180,236,214,0.28),rgba(255,255,255,0.88))]"
+                  : section.title === "Что помогает"
+                    ? "border-[#b7ded0] bg-[#eafff6]/80"
+                    : "border-[var(--line)] bg-[var(--bg)]"
+              }`}
+            >
+              <h2
+                className={`font-serif text-2xl ${
+                  section.title === "Что помогает" || section.title === "Суть за 30 секунд" ? "text-[#17614f]" : ""
+                }`}
+              >
+                {section.title}
+              </h2>
               <div className="mt-3 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
                 {section.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
-              <ArticlePracticeTools slug={article.slug} sectionTitle={section.title} />
             </section>
           ))}
 
@@ -92,27 +101,27 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </section>
           ) : null}
 
-          <section className="rounded-2xl border border-[var(--line)] bg-white p-6">
-            <h2 className="font-serif text-2xl">Что можно сделать дальше</h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--text-soft)]">{article.cta}</p>
-          </section>
-
-          <section className="rounded-2xl border border-[var(--line)] bg-white p-6">
-            <h2 className="font-serif text-2xl">Вопросы и ответы</h2>
-            <div className="mt-4 space-y-4">
-              {article.faq.map((item) => (
-                <article key={item.question} className="rounded-xl border border-[var(--line)] bg-[var(--bg)] p-4">
-                  <h3 className="font-semibold">{item.question}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">{item.answer}</p>
-                </article>
-              ))}
-            </div>
+          <section className="rounded-2xl border border-[#e7d9bf] bg-[#fff8ec] p-6">
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
+                <ChevronRight className="h-5 w-5 text-[var(--accent-deep)] transition-transform duration-200 group-open:rotate-90" />
+                <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Вопросы и ответы</h2>
+              </summary>
+              <div className="mt-4 space-y-3">
+                {article.faq.map((item) => (
+                  <details key={item.question} className="group/faq rounded-xl border border-[#ecdcc0] bg-white/90 p-4">
+                    <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
+                      <ChevronRight className="h-4 w-4 shrink-0 text-[var(--accent-deep)] transition-transform duration-200 group-open/faq:rotate-90" />
+                      <h3 className="font-semibold">{item.question}</h3>
+                    </summary>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">{item.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </details>
           </section>
 
           <InteractiveQuiz slug={article.slug} quiz={article.quiz} />
-
-          <DisclaimerBlock />
-          <RelatedArticles articles={relatedArticles} />
         </div>
       </article>
     </div>

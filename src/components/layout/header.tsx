@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { Menu } from "lucide-react";
 
 const nav = [
   { href: "/", label: "Главная" },
   { href: "/articles", label: "Статьи" },
+  { href: "/tests", label: "Тесты" },
   { href: "/topics", label: "Карта" },
   { href: "/newsletter", label: "Рассылка" },
 ];
@@ -25,9 +27,22 @@ export function Header() {
             </Link>
           ))}
         </nav>
-        <Link href="/contact" className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">
-          Диагностика
-        </Link>
+        <details className="relative md:hidden">
+          <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full border border-[var(--line)] bg-white text-[var(--text)] [&::-webkit-details-marker]:hidden">
+            <Menu className="h-5 w-5" />
+          </summary>
+          <nav className="absolute right-0 top-12 z-30 w-56 rounded-2xl border border-white/20 bg-white/85 p-2 shadow-lg backdrop-blur-xl">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="block rounded-xl px-3 py-2 text-sm font-medium text-[var(--text-soft)] transition hover:bg-white hover:text-[var(--text)]"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        </details>
       </div>
     </header>
   );

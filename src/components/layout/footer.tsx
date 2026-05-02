@@ -9,6 +9,22 @@ export function Footer() {
           <p className="mt-3 text-sm leading-6 text-[var(--text-soft)]">
             Практичная психология отношений: меньше шума, больше ясных шагов.
           </p>
+          <div className="mt-5 space-y-2 text-sm text-[var(--text-soft)]">
+            <p>ИНН: 771402421981</p>
+            <p>
+              Email:{" "}
+              <a className="underline-offset-2 hover:underline" href="mailto:vlad575@mail.ru">
+                vlad575@mail.ru
+              </a>
+            </p>
+            <p>
+              Телефон:{" "}
+              <a className="underline-offset-2 hover:underline" href="tel:+79263177226">
+                +7 (926) 317-72-26
+              </a>
+            </p>
+            <p>Правообладатель: Олейник Владислав Александрович</p>
+          </div>
         </div>
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--text-soft)]">Навигация</h3>
@@ -21,13 +37,20 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--text-soft)]">Важно</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-[var(--text-soft)]">Правовая информация</h3>
           <ul className="mt-3 space-y-2 text-sm text-[var(--text-soft)]">
-            <li><Link href="/editorial-policy">Редполитика</Link></li>
-            <li><Link href="/privacy">Политика приватности</Link></li>
+            <li><Link href="/privacy">Политика обработки персональных данных</Link></li>
+            <li><Link href="/terms">Условия использования</Link></li>
+            <li><Link href="/cookies">Настройки файлов Cookie</Link></li>
+            <li><a href="/sitemap.xml">Карта сайта</a></li>
             <li><Link href="/disclaimer">Дисклеймер</Link></li>
-            <li><Link href="/newsletter">Рассылка</Link></li>
+            <li><Link href="/editorial-policy">Редакционная политика</Link></li>
           </ul>
+        </div>
+      </div>
+      <div className="border-t border-[var(--line)]">
+        <div className="mx-auto w-full max-w-6xl px-6 py-4 text-sm text-[var(--text-soft)]">
+          © 2026, Олейник Владислав Александрович
         </div>
       </div>
     </footer>

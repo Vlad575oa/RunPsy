@@ -1,10 +1,17 @@
 import Link from "next/link";
 import { ArticleCard } from "@/components/blog/article-card";
-import { NewsletterCTA } from "@/components/sections/newsletter-cta";
-import { categories, getPublishedArticles } from "@/lib/content";
+import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
+import { buildMetadata } from "@/lib/seo";
 
-export default function HomePage() {
-  const articles = getPublishedArticles();
+export const metadata = buildMetadata({
+  title: "RunPsy — статьи, тесты и чек-листы по психологии отношений",
+  description:
+    "Практичная психология отношений: 250 статей, 25 тестов и 25 чек-листов про тревогу, границы, расставание, созависимость, самооценку и выгорание.",
+  path: "/",
+});
+
+export default async function HomePage() {
+  const [articles, categories] = await Promise.all([getPublishedArticlesFromStore(), getCategoriesFromStore()]);
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-9 px-6 py-10">
@@ -53,8 +60,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      <NewsletterCTA />
     </div>
   );
 }

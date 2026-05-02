@@ -1,17 +1,31 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/blog/article-card";
-import { getPublishedArticles, getAuthorBySlug } from "@/lib/content";
+import { getAuthorBySlugFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
+import { buildMetadata } from "@/lib/seo";
 
 type AuthorPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const author = await getAuthorBySlugFromStore(slug);
+  if (!author) return {};
+
+  return buildMetadata({
+    title: `${author.name}: статьи и редакционная проверка | RunPsy`,
+    description: author.bio,
+    path: `/authors/${author.slug}`,
+  });
+}
+
 export default async function AuthorPage({ params }: AuthorPageProps) {
   const { slug } = await params;
-  const author = getAuthorBySlug(slug);
+  const author = await getAuthorBySlugFromStore(slug);
   if (!author) notFound();
 
-  const articles = getPublishedArticles().filter((article) => article.author === author.name);
+  const articles = (await getPublishedArticlesFromStore()).filter((article) => article.author === author.name);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-10">

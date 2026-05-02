@@ -4,16 +4,24 @@ const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
   async headers() {
+    const isDev = process.env.NODE_ENV !== "production";
+    const scriptSrc = isDev
+      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://mc.yandex.ru"
+      : "script-src 'self' 'unsafe-inline' https://mc.yandex.ru";
+    const connectSrc = isDev
+      ? "connect-src 'self' ws: wss: https://mc.yandex.ru"
+      : "connect-src 'self' https://mc.yandex.ru";
+
     const securityHeaders = [
       {
         key: "Content-Security-Policy",
         value: [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline'",
+          scriptSrc,
           "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data: blob:",
+          "img-src 'self' data: blob: https://mc.yandex.ru",
           "font-src 'self' data:",
-          "connect-src 'self'",
+          connectSrc,
           "frame-ancestors 'none'",
           "base-uri 'self'",
           "form-action 'self'",

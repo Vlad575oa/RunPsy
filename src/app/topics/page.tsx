@@ -1,5 +1,5 @@
 import { ObsidianTopicMap } from "@/components/topics/obsidian-topic-map";
-import { categories, getPublishedArticles } from "@/lib/content";
+import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -8,6 +8,7 @@ export const metadata = buildMetadata({
   path: "/topics",
 });
 
-export default function TopicsPage() {
-  return <ObsidianTopicMap articles={getPublishedArticles()} categories={categories} />;
+export default async function TopicsPage() {
+  const [articles, categories] = await Promise.all([getPublishedArticlesFromStore(), getCategoriesFromStore()]);
+  return <ObsidianTopicMap articles={articles} categories={categories} />;
 }

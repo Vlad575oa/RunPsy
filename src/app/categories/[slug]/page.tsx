@@ -1,16 +1,30 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleCard } from "@/components/blog/article-card";
-import { getArticlesByCategory, getCategoryBySlug } from "@/lib/content";
+import { getArticlesByCategoryFromStore, getCategoryBySlugFromStore } from "@/lib/content-store";
+import { buildMetadata } from "@/lib/seo";
 
 type CategoryPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlugFromStore(slug);
+  if (!category) return {};
+
+  return buildMetadata({
+    title: category.seoTitle,
+    description: category.metaDescription,
+    path: `/categories/${category.slug}`,
+  });
+}
+
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const category = getCategoryBySlug(slug);
+  const category = await getCategoryBySlugFromStore(slug);
   if (!category) notFound();
-  const articles = getArticlesByCategory(slug);
+  const articles = await getArticlesByCategoryFromStore(slug);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-6 py-10">
