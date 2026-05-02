@@ -22,6 +22,7 @@ import { useMemo, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import ReactMarkdown from "react-markdown";
 import type { Article, Category } from "@/types/article";
+import { isUpdatedArticle } from "@/lib/updated-articles";
 
 type ObsidianTopicMapProps = {
   articles: Article[];
@@ -154,6 +155,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                                     article.slug === selectedArticle.slug
                                       ? "bg-white/72 text-[var(--accent-deep)] ring-1 ring-[rgba(207,107,62,0.25)]"
                                       : "text-[var(--text-soft)] hover:bg-white/50 hover:text-[var(--text)]",
+                                    isUpdatedArticle(article.slug) ? "border border-emerald-400/70" : "border border-transparent",
                                   ].join(" ")}
                                 >
                                   <FileText className="mt-0.5 h-4 w-4 shrink-0" />
@@ -205,7 +207,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className="mx-auto max-w-3xl px-6 py-10 md:px-10"
+              className={`mx-auto max-w-3xl px-6 py-10 md:px-10 ${isUpdatedArticle(selectedArticle.slug) ? "rounded-2xl border border-emerald-400/80 bg-emerald-50/20" : ""}`}
             >
               <div className="mb-7 flex flex-wrap items-center gap-2">
                 {selectedArticle.tags.slice(0, 4).map((tag) => (
