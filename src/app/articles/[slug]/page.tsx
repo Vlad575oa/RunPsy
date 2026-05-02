@@ -234,8 +234,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             const checklistItems = isChecklistTitle(section.title) ? extractChecklistItems(section, article) : [];
 
             if (section.title === "Суть за 30 секунд") return null;
-            if (isModelTitle(section.title)) return renderModelSection(section, articlePath, sectionId);
-            if (isBadAdviceTitle(section.title)) return renderBadAdviceSection(section, articlePath, sectionId);
+            if (isModelTitle(section.title)) return <div key={sectionId}>{renderModelSection(section, articlePath, sectionId)}</div>;
+            if (isBadAdviceTitle(section.title)) return <div key={sectionId}>{renderBadAdviceSection(section, articlePath, sectionId)}</div>;
             if (isDialogueTitle(section.title)) {
               return <ArticleDialogueBlock key={sectionId} title={section.title} items={dialogueItems} />;
             }
