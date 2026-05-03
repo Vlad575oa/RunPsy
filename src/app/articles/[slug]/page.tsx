@@ -191,8 +191,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         {JSON.stringify(faqSchema(article))}
       </Script>
 
-      <Link href="/articles" className="text-sm font-semibold text-[var(--accent-deep)] underline-offset-2 hover:underline">
-        ← Назад к статьям
+      <Link href="/" className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold text-[var(--accent-deep)] shadow-sm transition hover:border-[var(--accent)] hover:bg-[var(--bg)]">
+        ← Назад
       </Link>
 
       <article className="mt-4 rounded-none border-y border-[var(--line)] bg-white p-6 shadow-sm sm:rounded-[2rem] sm:border md:p-8">

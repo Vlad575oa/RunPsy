@@ -1,4 +1,4 @@
-import { ArticleExpander } from "@/components/blog/article-expander";
+import { ArticleCard } from "@/components/blog/article-card";
 import { Pagination } from "@/components/blog/pagination";
 import { SearchForm } from "@/components/blog/search-form";
 import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
@@ -63,9 +63,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             По вашему запросу ничего не найдено. Попробуйте изменить поиск или категорию.
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-3">
             {paginated.map((article) => (
-              <ArticleExpander key={article.slug} article={article} />
+              <ArticleCard key={article.slug} article={article} />
             ))}
           </div>
         )}

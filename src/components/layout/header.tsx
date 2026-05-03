@@ -16,9 +16,12 @@ export function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-white/70 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="font-serif text-2xl font-bold text-[var(--accent-deep)]">
-          RunPsy
-        </Link>
+        <div className="flex-1">
+          <Link href="/" className="font-serif text-2xl font-bold text-[var(--accent-deep)]">
+            RunPsy
+          </Link>
+        </div>
+        
         <nav className="hidden items-center gap-2 md:flex">
           {nav.map((item) => (
             <Link
@@ -30,6 +33,10 @@ export function Header() {
             </Link>
           ))}
         </nav>
+
+        <div className="hidden flex-1 justify-end md:flex">
+          {/* Пустой блок для центровки навигации */}
+        </div>
 
         <div className="relative md:hidden">
           <button
