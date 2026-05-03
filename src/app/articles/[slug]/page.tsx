@@ -218,20 +218,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </section>
         <p className="mt-4 text-sm text-[var(--text-soft)]">{article.date} · {article.readingTime}</p>
 
-        <details className="mt-7 rounded-2xl border border-[var(--line)] bg-[var(--bg)] p-4">
-          <summary className="cursor-pointer rounded-full bg-white px-4 py-2 text-sm font-semibold text-[var(--accent-deep)] marker:text-[var(--accent)]">
-            Содержание
-          </summary>
-          <nav className="mt-4 grid gap-2 text-sm leading-6 text-[var(--text-soft)] md:grid-cols-2" aria-label="Содержание статьи">
-            {sections.map((section, index) => (
-              <a key={`${section.title}-${index}`} className="rounded-xl px-3 py-2 transition hover:bg-white hover:text-[var(--text)]" href={`#section-${index + 1}`}>
-                {index + 1}. {section.title}
-              </a>
-            ))}
-          </nav>
-        </details>
-
-        <div className="mt-10 space-y-7" id="content">
+<div className="mt-10 space-y-7" id="content">
           {sections.map((section, index) => {
             const sectionId = `section-${index + 1}`;
             const dialogueItems = isDialogueTitle(section.title) ? buildDialogueItems(article, articlePath, sectionId, section) : [];
