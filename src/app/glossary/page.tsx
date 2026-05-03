@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { glossaryEntries } from "@/lib/glossary";
+import { GlossarySearch } from "@/components/blog/glossary-search";
 
 export const metadata: Metadata = {
   title: "Словарь терминов | RunPsy",
@@ -34,43 +35,7 @@ export default async function GlossaryPage({ searchParams }: GlossaryPageProps) 
         </Link>
       </div>
 
-      <div className="mt-8 rounded-[2rem] border border-[var(--line)] bg-white p-6 shadow-sm">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {glossaryEntries.map((entry) => (
-            <a
-              key={entry.slug}
-              href={`#${entry.slug}`}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm text-[var(--text-soft)] transition hover:border-[var(--accent)] hover:text-[var(--text)]"
-            >
-              <span className="block font-semibold text-[var(--text)]">{entry.term}</span>
-              <span className="mt-1 block leading-5">{entry.short}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-8 space-y-5">
-        {glossaryEntries.map((entry) => (
-          <section key={entry.slug} id={entry.slug} className="scroll-mt-24 rounded-[2rem] border border-[var(--line)] bg-white p-6 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Термин</p>
-            <h2 className="mt-2 font-serif text-3xl text-[var(--text)]">{entry.term}</h2>
-            <p className="mt-3 text-base leading-7 text-[var(--accent-deep)]">{entry.short}</p>
-            <p className="mt-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">{entry.definition}</p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {entry.aliases.map((alias) => (
-                <span key={alias} className="rounded-full border border-[var(--line)] bg-[var(--bg)] px-3 py-1 text-xs text-[var(--text-soft)]">
-                  {alias}
-                </span>
-              ))}
-            </div>
-            <div className="mt-5">
-              <Link href={backHref} className="text-sm font-semibold text-[var(--accent-deep)] underline-offset-2 hover:underline">
-                Вернуться к статье
-              </Link>
-            </div>
-          </section>
-        ))}
-      </div>
+      <GlossarySearch entries={glossaryEntries} backHref={backHref} />
     </div>
   );
 }
