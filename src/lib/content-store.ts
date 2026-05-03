@@ -19,6 +19,7 @@ type ArticleRow = {
   intent: Article["intent"];
   cta: string;
   safety_note: string | null;
+  introduction: string | null;
   related_slugs: string[];
   insight_impulse: Article["insightImpulse"];
   sections: Article["sections"];
@@ -62,6 +63,7 @@ function mapArticle(row: ArticleRow): Article {
     intent: row.intent,
     cta: row.cta,
     safetyNote: row.safety_note ?? undefined,
+    introduction: row.introduction ?? undefined,
     relatedSlugs: row.related_slugs,
     insightImpulse: row.insight_impulse,
     sections: row.sections,
@@ -126,6 +128,7 @@ export async function getPublishedArticlesFromStore() {
           a.intent,
           a.cta,
           a.safety_note,
+          a.introduction,
           a.related_slugs,
           a.insight_impulse,
           a.sections,
