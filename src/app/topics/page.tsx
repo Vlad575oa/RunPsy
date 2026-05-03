@@ -2,6 +2,8 @@ import { ObsidianTopicMap } from "@/components/topics/obsidian-topic-map";
 import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = buildMetadata({
   title: "Карта тем | RunPsy",
   description: "Навигация по ключевым направлениям контента RunPsy.",
