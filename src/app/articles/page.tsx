@@ -2,6 +2,8 @@ import { ArticleCard } from "@/components/blog/article-card";
 import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = buildMetadata({
   title: "Статьи по психологии отношений: 250 материалов | RunPsy",
   description:

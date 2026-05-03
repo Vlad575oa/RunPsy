@@ -30,10 +30,7 @@ const isScenarioTitle = (title: string) => title.toLowerCase().includes("сце�
 const isModelTitle = (title: string) => title.toLowerCase().includes("почему это происходит");
 const isBadAdviceTitle = (title: string) => title.toLowerCase().includes("плохие советы");
 
-export async function generateStaticParams() {
-  const articles = await getPublishedArticlesFromStore();
-  return articles.map((article) => ({ slug: article.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
