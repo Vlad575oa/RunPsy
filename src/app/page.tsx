@@ -63,7 +63,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             По вашему запросу ничего не найдено. Попробуйте изменить поиск или категорию.
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
             {paginated.map((article) => (
               <ArticleExpander key={article.slug} article={article} />
             ))}

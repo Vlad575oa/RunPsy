@@ -8,7 +8,6 @@ const nav = [
   { href: "/", label: "Главная" },
   { href: "/tests", label: "Тесты" },
   { href: "/topics", label: "Карта" },
-  { href: "/newsletter", label: "Рассылка" },
 ];
 
 export function Header() {
