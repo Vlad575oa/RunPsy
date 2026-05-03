@@ -106,7 +106,52 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
   return (
     <div className="mt-6 grid gap-6 lg:grid-cols-[320px_1fr]">
       <aside className="rounded-2xl border border-[var(--line)] bg-white p-3 shadow-sm">
-        <div className="grid grid-cols-2 gap-2">
+        {/* Мобильная версия: выпадающие списки */}
+        <div className="space-y-4 md:hidden">
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--accent)]" htmlFor="mode-select">
+              Раздел
+            </label>
+            <select
+              id="mode-select"
+              className="w-full appearance-none rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition focus:border-[var(--accent)]"
+              value={mode}
+              onChange={(e) => setMode(e.target.value as "tests" | "checklists")}
+            >
+              <option value="tests">Тесты</option>
+              <option value="checklists">Чек-листы</option>
+            </select>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--accent)]" htmlFor="item-select">
+              Выбор {mode === "tests" ? "теста" : "чек-листа"}
+            </label>
+            <select
+              id="item-select"
+              className="w-full appearance-none rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition focus:border-[var(--accent)]"
+              value={mode === "tests" ? selectedTestId : selectedChecklistId}
+              onChange={(e) => {
+                const id = e.target.value;
+                if (mode === "tests") {
+                  setSelectedTestId(id);
+                  setAnswers({});
+                } else {
+                  setSelectedChecklistId(id);
+                  setChecked({});
+                }
+              }}
+            >
+              {(mode === "tests" ? tests : checklists).map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Десктопная версия переключателей */}
+        <div className="hidden grid-cols-2 gap-2 md:grid">
           <button
             className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === "tests" ? "bg-[var(--accent)] text-white" : "bg-[var(--bg)] text-[var(--text-soft)]"}`}
             type="button"
@@ -123,7 +168,8 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
           </button>
         </div>
 
-        <div className="mt-3 max-h-[680px] space-y-2 overflow-y-auto pr-1">
+        {/* Десктопный список элементов */}
+        <div className="mt-3 hidden max-h-[680px] space-y-2 overflow-y-auto pr-1 md:block">
           {mode === "tests"
             ? tests.map((test) => (
                 <button
