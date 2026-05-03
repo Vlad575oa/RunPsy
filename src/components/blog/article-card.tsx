@@ -2,23 +2,78 @@ import Link from "next/link";
 import type { Article } from "@/types/article";
 import { isUpdatedArticle } from "@/lib/updated-articles";
 
+const CATEGORY_ICONS: Record<string, string> = {
+  "relationships": "💑",
+  "attachment-and-intimacy": "🫂",
+  "couple-boundaries": "🔐",
+  "anxiety-and-stress": "🌀",
+  "burnout-and-energy": "⚡",
+  "breakup-recovery": "🌱",
+  "crises-and-breakups": "💔",
+  "boundaries-and-communication": "🗣️",
+  "family-and-parenting": "🏠",
+  "emotional-maturity": "🪞",
+  "male-female-psychology": "☯️",
+  "self-worth-and-growth": "✨",
+  "habits-and-motivation": "🎯",
+  "learning-and-focus": "📚",
+};
+
+const INTENT_COLORS: Record<string, string> = {
+  "кризисный": "text-rose-500 bg-rose-50/60 border-rose-200/50",
+  "эмоциональный": "text-violet-500 bg-violet-50/60 border-violet-200/50",
+  "информационный": "text-[var(--accent)] bg-[rgba(207,107,62,0.07)] border-[rgba(207,107,62,0.2)]",
+};
+
 export function ArticleCard({ article, highlighted = false }: { article: Article; highlighted?: boolean }) {
   const shouldHighlight = highlighted || isUpdatedArticle(article.slug);
+  const icon = CATEGORY_ICONS[article.category] ?? "📌";
+  const intentClass = INTENT_COLORS[article.intent] ?? INTENT_COLORS["информационный"];
+  const preview = (article.introduction ?? article.description).slice(0, 90);
+
   return (
     <Link href={`/articles/${article.slug}`} className="block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
       <article
-        className={`flex h-full flex-col rounded-2xl border bg-white p-3 shadow-sm transition hover:-translate-y-0.5 sm:p-6 ${
+        className={[
+          "group flex h-full flex-col rounded-2xl border p-4 backdrop-blur-xl transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-5",
           shouldHighlight
-            ? "border-emerald-500 ring-1 ring-emerald-100 hover:border-emerald-600"
-            : "border-[var(--line)] hover:border-[var(--accent)]"
-        }`}
+            ? "border-emerald-400/60 bg-emerald-50/30 hover:border-emerald-500/70"
+            : "border-[rgba(255,255,255,0.55)] bg-white/45 hover:border-[rgba(207,107,62,0.35)] hover:bg-white/60",
+        ].join(" ")}
       >
-        <p className="text-[10px] uppercase tracking-[0.08em] text-[var(--accent)] sm:text-xs">{article.intent}</p>
-        <h3 className={`mt-1.5 font-serif text-sm leading-tight sm:mt-2 sm:text-2xl ${shouldHighlight ? "text-emerald-800" : ""}`}>{article.title}</h3>
-        <p className="mt-2 hidden text-sm leading-6 text-[var(--text-soft)] sm:block">{article.description}</p>
-        <div className="mt-auto flex items-center justify-between pt-2 text-xs text-[var(--text-soft)] sm:pt-5">
+        {/* Иконка + интент */}
+        <div className="flex items-center justify-between">
+          <span className="text-xl">{icon}</span>
+          <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${intentClass}`}>
+            {article.intent}
+          </span>
+        </div>
+
+        {/* Заголовок */}
+        <h3 className={`mt-3 font-[var(--font-lora)] text-sm font-semibold leading-snug sm:text-base ${shouldHighlight ? "text-emerald-800" : "text-[var(--text)]"}`}>
+          {article.title}
+        </h3>
+
+        {/* Превью */}
+        <p className="mt-2 text-xs leading-5 text-[var(--text-soft)] sm:text-sm sm:leading-6">
+          {preview}{preview.length >= 90 ? "…" : ""}
+        </p>
+
+        {/* Теги */}
+        {article.tags.length > 0 && (
+          <div className="mt-3 hidden flex-wrap gap-1.5 sm:flex">
+            {article.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="rounded-full border border-[rgba(255,255,255,0.55)] bg-white/50 px-2 py-0.5 text-[10px] text-[var(--text-soft)]">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Футер */}
+        <div className="mt-auto flex items-center justify-between pt-3 text-[11px] text-[var(--text-soft)]">
           <span>{article.readingTime}</span>
-          <span className="hidden sm:inline">{article.date}</span>
+          <span className="hidden sm:inline opacity-60">{article.date}</span>
         </div>
       </article>
     </Link>

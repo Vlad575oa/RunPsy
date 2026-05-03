@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   BookOpen,
   Brain,
+  CheckSquare,
   ChevronDown,
   ChevronRight,
   CircleDot,
@@ -11,16 +12,17 @@ import {
   Folder,
   GitFork,
   Menu,
+  MessageSquare,
   Moon,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
   Sparkles,
   Sun,
+  Zap,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
-import ReactMarkdown from "react-markdown";
 import type { Article, Category } from "@/types/article";
 import { isUpdatedArticle } from "@/lib/updated-articles";
 
@@ -57,7 +59,6 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
     );
   }, [articles, query]);
 
-  const markdown = useMemo(() => (selectedArticle ? articleToMarkdown(selectedArticle) : ""), [selectedArticle]);
   const linkedNotes = useMemo(() => buildLinkedNotes(selectedArticle, articles), [selectedArticle, articles]);
 
   function toggleCategory(slug: string) {
@@ -171,15 +172,15 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                                   type="button"
                                   onClick={() => { setSelectedSlug(article.slug); setMobileView("article"); }}
                                   className={[
-                                    "flex w-full items-start gap-2 rounded-xl px-3 py-2 text-left text-sm transition",
+                                    "flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-[13px] transition",
                                     article.slug === selectedArticle.slug
                                       ? "bg-white/72 text-[var(--accent-deep)] ring-1 ring-[rgba(207,107,62,0.25)]"
                                       : "text-[var(--text-soft)] hover:bg-white/50 hover:text-[var(--text)]",
                                     isUpdatedArticle(article.slug) ? "border border-emerald-400/70" : "border border-transparent",
                                   ].join(" ")}
                                 >
-                                  <FileText className="mt-0.5 h-4 w-4 shrink-0" />
-                                  <span className="min-w-0 flex-1 truncate">{article.title}.md</span>
+                                  <FileText className="h-3.5 w-3.5 shrink-0" />
+                                  <span className="min-w-0 flex-1 truncate leading-snug">{article.title}</span>
                                 </button>
                               ))}
                             </div>
@@ -195,7 +196,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
         </aside>
 
         <div className={`min-w-0 bg-transparent ${mobileView !== "article" ? "hidden lg:block" : ""}`}>
-          <div className="sticky top-[73px] z-10 flex min-h-16 items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.45)] bg-white/40 px-5 backdrop-blur-2xl">
+          <div className="sticky top-[73px] z-10 hidden min-h-16 items-center justify-between gap-4 border-b border-[rgba(255,255,255,0.45)] bg-white/40 px-5 backdrop-blur-2xl lg:flex">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--text-soft)]">
                 <button type="button" onClick={() => setSelectedSlug(articles[0].slug)} className="transition hover:text-[var(--accent-deep)]">
@@ -204,9 +205,8 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                 <ChevronRight className="h-3.5 w-3.5" />
                 <span>{selectedCategory?.title ?? "Psychology Topics"}</span>
                 <ChevronRight className="h-3.5 w-3.5" />
-                <span className="truncate text-[var(--text)]">{selectedArticle.title}.md</span>
+                <span className="truncate text-[var(--text)]">{selectedArticle.title}</span>
               </div>
-              <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]/80">Breadcrumbs 2.0</p>
             </div>
 
             <button
@@ -229,7 +229,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
               transition={{ duration: 0.28, ease: "easeOut" }}
               className={`mx-auto max-w-3xl px-6 py-10 md:px-10 ${isUpdatedArticle(selectedArticle.slug) ? "rounded-2xl border border-emerald-400/80 bg-emerald-50/20" : ""}`}
             >
-              <div className="mb-7 flex flex-wrap items-center gap-2">
+              <div className="mb-7 hidden flex-wrap items-center gap-2 lg:flex">
                 {selectedArticle.tags.slice(0, 4).map((tag) => (
                   <span key={tag} className="rounded-full border border-[rgba(255,255,255,0.55)] bg-white/40 px-3 py-1 text-xs text-[var(--text-soft)] backdrop-blur-xl">
                     #{tag}
@@ -237,23 +237,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                 ))}
               </div>
 
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => <h1 className="font-[var(--font-lora)] text-4xl leading-tight text-[var(--text)] md:text-5xl">{children}</h1>,
-                  h2: ({ children }) => <h2 className="mt-10 font-[var(--font-lora)] text-2xl text-[var(--text)]">{children}</h2>,
-                  p: ({ children }) => <p className="mt-5 font-[var(--font-lora)] text-[1.05rem] leading-8 text-[var(--text-soft)]">{children}</p>,
-                  ul: ({ children }) => <ul className="mt-5 space-y-2 font-[var(--font-lora)] text-[var(--text-soft)]">{children}</ul>,
-                  li: ({ children }) => <li className="ml-5 list-disc leading-8">{children}</li>,
-                  blockquote: ({ children }) => (
-                    <blockquote className="mt-7 rounded-2xl border border-[rgba(255,255,255,0.55)] bg-white/42 px-5 py-4 font-[var(--font-lora)] text-[var(--accent-deep)] backdrop-blur-xl">
-                      {children}
-                    </blockquote>
-                  ),
-                  strong: ({ children }) => <strong className="font-semibold text-[var(--text)]">{children}</strong>,
-                }}
-              >
-                {markdown}
-              </ReactMarkdown>
+              <ArticleContent article={selectedArticle} />
             </motion.article>
           </AnimatePresence>
         </div>
@@ -307,28 +291,211 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
   );
 }
 
-function articleToMarkdown(article: Article) {
-  const sections = article.sections
-    .map((section) => `## ${section.title}\n\n${section.paragraphs.join("\n\n")}`)
-    .join("\n\n");
-  const faq = article.faq.map((item) => `- **${item.question}** ${item.answer}`).join("\n");
+const SECTION_META: Record<string, { icon: string; accent: string }> = {
+  "суть": { icon: "⚡", accent: "amber" },
+  "точка боли": { icon: "🎯", accent: "rose" },
+  "почему": { icon: "🔍", accent: "violet" },
+  "советуют": { icon: "🚫", accent: "rose" },
+  "помогает": { icon: "✨", accent: "emerald" },
+  "микро": { icon: "🏃", accent: "orange" },
+  "диалог": { icon: "💬", accent: "blue" },
+  "50/50": { icon: "⚖️", accent: "indigo" },
+  "чек-лист": { icon: "✅", accent: "emerald" },
+  "пример": { icon: "📖", accent: "amber" },
+  "исследован": { icon: "🧠", accent: "violet" },
+  "специалист": { icon: "🩺", accent: "rose" },
+  "итог": { icon: "🎯", accent: "orange" },
+};
 
-  return `# ${article.title}
+function getSectionMeta(title: string) {
+  const t = title.toLowerCase();
+  for (const [key, val] of Object.entries(SECTION_META)) {
+    if (t.includes(key)) return val;
+  }
+  return { icon: "📌", accent: "amber" };
+}
 
-> ${article.description}
+function ArticleContent({ article }: { article: Article }) {
+  const ii = article.insightImpulse;
+  const [openSections, setOpenSections] = useState<Set<number>>(() => new Set([0]));
 
-${sections}
+  function toggleSection(i: number) {
+    setOpenSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  }
 
-## Вопросы и ответы
+  return (
+    <div>
+      {/* Заголовок */}
+      <h1 className="font-[var(--font-lora)] text-2xl leading-tight text-[var(--text)] md:text-4xl lg:text-5xl">
+        {article.title}
+      </h1>
 
-${faq}
+      {/* Введение — всегда открыто, выделенное оформление */}
+      {article.introduction && (
+        <div className="mt-6 overflow-hidden rounded-2xl border border-[rgba(207,107,62,0.25)] bg-gradient-to-br from-[rgba(207,107,62,0.08)] to-[rgba(207,107,62,0.03)]">
+          <div className="border-b border-[rgba(207,107,62,0.15)] px-5 py-3">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--accent)]">📖 Введение в проблему</span>
+          </div>
+          <div className="px-5 py-5">
+            {article.introduction.split(". ").reduce<string[][]>((acc, sentence, i) => {
+              const chunk = Math.floor(i / 2);
+              if (!acc[chunk]) acc[chunk] = [];
+              acc[chunk].push(sentence);
+              return acc;
+            }, []).map((sentences, i) => (
+              <p key={i} className={[
+                "font-[var(--font-lora)] text-[1.05rem] leading-8",
+                i === 0 ? "font-medium text-[var(--text)]" : "mt-4 text-[var(--text-soft)]",
+              ].join(" ")}>
+                {sentences.join(". ")}{sentences[sentences.length - 1]?.endsWith(".") ? "" : "."}
+              </p>
+            ))}
+          </div>
+        </div>
+      )}
 
-## Мини-тест
+      {/* Секции — аккордеон */}
+      <div className="mt-6 space-y-2">
+        {article.sections.map((section, i) => {
+          const isOpen = openSections.has(i);
+          const meta = getSectionMeta(section.title);
+          const isChecklist = section.title.toLowerCase().includes("чек-лист");
+          const isDialogue = section.title.toLowerCase().includes("диалог");
+          const isTwoSides = section.title.toLowerCase().includes("50/50");
+          const isMicro = section.title.toLowerCase().includes("микро");
+          const isSpecialist = section.title.toLowerCase().includes("специалист");
+          const isResult = section.title.toLowerCase().includes("итог") || section.title.toLowerCase().includes("сегодня");
+          const preview = section.paragraphs[0]?.slice(0, 80);
 
-${article.quiz.description}
+          return (
+            <div
+              key={i}
+              className={[
+                "overflow-hidden rounded-2xl border transition-all duration-200",
+                isOpen
+                  ? "border-[rgba(255,255,255,0.6)] bg-white/50 shadow-sm backdrop-blur-xl"
+                  : "border-[rgba(255,255,255,0.4)] bg-white/30 backdrop-blur-xl hover:bg-white/40",
+              ].join(" ")}
+            >
+              <button
+                type="button"
+                onClick={() => toggleSection(i)}
+                className="flex w-full items-center gap-3 px-5 py-4 text-left"
+              >
+                <span className="text-lg">{meta.icon}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-[var(--text)]">{section.title}</p>
+                  {!isOpen && preview && (
+                    <p className="mt-0.5 truncate text-xs text-[var(--text-soft)]">{preview}…</p>
+                  )}
+                </div>
+                <ChevronDown className={`h-4 w-4 shrink-0 text-[var(--text-soft)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+              </button>
 
-${article.quiz.questions.map((question) => `- **${question.question}** ${question.options.join(" / ")}`).join("\n")}
-`;
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.22, ease: "easeOut" }}
+                    className="overflow-hidden"
+                  >
+                    <div className="space-y-3 px-5 pb-5">
+                      {section.paragraphs.map((p, j) => (
+                        <p key={j} className="font-[var(--font-lora)] text-[1rem] leading-8 text-[var(--text-soft)]">{p}</p>
+                      ))}
+
+                      {/* Чек-лист */}
+                      {isChecklist && ii.checklist.length > 0 && (
+                        <div className="mt-3 rounded-xl border border-emerald-200/50 bg-emerald-50/30 p-4">
+                          <ul className="space-y-2">
+                            {ii.checklist.map((item, k) => (
+                              <li key={k} className="flex items-start gap-3 text-sm text-[var(--text-soft)]">
+                                <span className="mt-1 h-4 w-4 shrink-0 rounded border border-emerald-400/50 bg-white/60" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Конструктор диалогов */}
+                      {isDialogue && ii.dialogue.length > 0 && (
+                        <div className="mt-3 space-y-3">
+                          {ii.dialogue.map((d, k) => (
+                            <div key={k} className="rounded-xl border border-blue-100/60 bg-blue-50/20 p-4">
+                              <p className="text-xs text-[var(--text-soft)] line-through opacity-60">❌ {d.instead}</p>
+                              <p className="mt-1 text-sm font-medium text-[var(--text)]">✓ {d.try}</p>
+                              <p className="mt-1 text-xs text-[var(--text-soft)]">{d.why}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Сценарии 50/50 */}
+                      {isTwoSides && ii.twoSides && (
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <div className="rounded-xl border border-[rgba(255,255,255,0.55)] bg-white/50 p-3">
+                            <p className="mb-2 text-xs font-semibold text-[var(--accent-deep)]">{ii.twoSides.firstTitle}</p>
+                            <ul className="space-y-1">
+                              {ii.twoSides.firstItems.map((item, k) => (
+                                <li key={k} className="text-xs text-[var(--text-soft)]">• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="rounded-xl border border-[rgba(255,255,255,0.55)] bg-white/50 p-3">
+                            <p className="mb-2 text-xs font-semibold text-[var(--accent)]">{ii.twoSides.secondTitle}</p>
+                            <ul className="space-y-1">
+                              {ii.twoSides.secondItems.map((item, k) => (
+                                <li key={k} className="text-xs text-[var(--text-soft)]">• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          {ii.twoSides.bridge && (
+                            <div className="col-span-2 rounded-xl bg-[rgba(207,107,62,0.08)] px-4 py-3 text-xs text-[var(--text-soft)]">
+                              {ii.twoSides.bridge}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Микро-действие */}
+                      {isMicro && ii.microAction && (
+                        <div className="mt-3 flex items-start gap-3 rounded-xl border border-[rgba(207,107,62,0.3)] bg-[rgba(207,107,62,0.07)] px-4 py-3">
+                          <Zap className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent)]" />
+                          <p className="text-sm leading-7 text-[var(--text-soft)]">{ii.microAction}</p>
+                        </div>
+                      )}
+
+                      {/* Когда нужен специалист */}
+                      {isSpecialist && article.safetyNote && (
+                        <div className="mt-3 rounded-xl border border-red-200/50 bg-red-50/25 px-4 py-3">
+                          <p className="text-sm leading-7 text-[var(--text-soft)]">{article.safetyNote}</p>
+                        </div>
+                      )}
+
+                      {/* Итог */}
+                      {isResult && (
+                        <div className="mt-3 rounded-xl border border-[rgba(207,107,62,0.3)] bg-[rgba(207,107,62,0.08)] px-4 py-3">
+                          <p className="text-sm font-semibold text-[var(--accent-deep)]">{article.cta}</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function buildLinkedNotes(article: Article, articles: Article[]): GraphNode[] {

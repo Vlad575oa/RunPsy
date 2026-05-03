@@ -1,4 +1,3 @@
-import { articles as fallbackArticles, authors as fallbackAuthors, categories as fallbackCategories } from "@/lib/content";
 import { getDbPool } from "@/lib/db";
 import type { Article, Author, Category } from "@/types/article";
 
@@ -107,7 +106,7 @@ async function withFallback<T>(loader: () => Promise<T>, fallback: T): Promise<T
 export async function getPublishedArticlesFromStore() {
   return withFallback(async () => {
     const pool = getDbPool();
-    if (!pool) return fallbackArticles.filter((article) => article.status === "published");
+    if (!pool) return [] as Article[];
 
     const result = await pool.query<ArticleRow>(
       `
@@ -143,7 +142,7 @@ export async function getPublishedArticlesFromStore() {
     );
 
     return result.rows.map(mapArticle);
-  }, fallbackArticles.filter((article) => article.status === "published"));
+  }, [] as Article[]);
 }
 
 export async function getArticleBySlugFromStore(slug: string) {
@@ -154,7 +153,7 @@ export async function getArticleBySlugFromStore(slug: string) {
 export async function getCategoriesFromStore() {
   return withFallback(async () => {
     const pool = getDbPool();
-    if (!pool) return fallbackCategories;
+    if (!pool) return [] as Category[];
 
     const result = await pool.query<CategoryRow>(
       `
@@ -165,7 +164,7 @@ export async function getCategoriesFromStore() {
     );
 
     return result.rows.map(mapCategory);
-  }, fallbackCategories);
+  }, [] as Category[]);
 }
 
 export async function getCategoryBySlugFromStore(slug: string) {
@@ -176,7 +175,7 @@ export async function getCategoryBySlugFromStore(slug: string) {
 export async function getAuthorsFromStore() {
   return withFallback(async () => {
     const pool = getDbPool();
-    if (!pool) return fallbackAuthors;
+    if (!pool) return [] as Author[];
 
     const result = await pool.query<AuthorRow>(
       `
@@ -187,7 +186,7 @@ export async function getAuthorsFromStore() {
     );
 
     return result.rows.map(mapAuthor);
-  }, fallbackAuthors);
+  }, [] as Author[]);
 }
 
 export async function getAuthorBySlugFromStore(slug: string) {
