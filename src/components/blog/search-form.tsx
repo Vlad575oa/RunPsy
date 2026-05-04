@@ -49,7 +49,7 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
         <div className="relative flex-1">
           <input
             id="home-search"
-            type="search"
+            type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Поиск по названию..."

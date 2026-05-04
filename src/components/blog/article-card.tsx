@@ -124,6 +124,38 @@ const CATEGORY_THEMES: Record<string, CategoryTheme> = {
     accent: "text-cyan-600",
     badge: "bg-cyan-50 border-cyan-200/60 text-cyan-500",
   },
+  "neuro-detox": {
+    icon: "🧠",
+    label: "Нейро-детокс",
+    border: "border-blue-200/70",
+    bg: "bg-blue-50/40",
+    accent: "text-blue-600",
+    badge: "bg-blue-50 border-blue-200/60 text-blue-500",
+  },
+  "social-ident": {
+    icon: "🎭",
+    label: "Социальное Я",
+    border: "border-indigo-200/70",
+    bg: "bg-indigo-50/40",
+    accent: "text-indigo-600",
+    badge: "bg-indigo-50 border-indigo-200/60 text-indigo-500",
+  },
+  "psychosomatics": {
+    icon: "🌡️",
+    label: "Психосоматика",
+    border: "border-red-200/70",
+    bg: "bg-red-50/40",
+    accent: "text-red-600",
+    badge: "bg-red-50 border-red-200/60 text-red-500",
+  },
+  "sex-as-protection": {
+    icon: "🛡️",
+    label: "Сексуальность",
+    border: "border-fuchsia-200/70",
+    bg: "bg-fuchsia-50/40",
+    accent: "text-fuchsia-600",
+    badge: "bg-fuchsia-50 border-fuchsia-200/60 text-fuchsia-500",
+  },
 };
 
 const DEFAULT_THEME: CategoryTheme = {

@@ -146,8 +146,28 @@ export async function getPublishedArticlesFromStore() {
 }
 
 export async function getArticleBySlugFromStore(slug: string) {
-  const articles = await getPublishedArticlesFromStore();
-  return articles.find((article) => article.slug === slug);
+  return withFallback(async () => {
+    const pool = getDbPool();
+    if (!pool) return null;
+
+    const result = await pool.query<ArticleRow>(
+      `
+        SELECT
+          a.slug, a.title, a.description, a.date::text AS date, a.updated::text AS updated,
+          a.author_slug, a.category_slug, a.tags, a.reading_time, a.hero_image,
+          a.seo_title, a.seo_description, a.status, a.intent, a.cta,
+          a.safety_note, a.introduction, a.related_slugs, a.insight_impulse,
+          a.sections, a.faq, a.quiz, au.name AS author_name
+        FROM runpsy_articles a
+        JOIN runpsy_authors au ON au.slug = a.author_slug
+        WHERE a.slug = $1 AND a.status = 'published'
+        LIMIT 1
+      `,
+      [slug]
+    );
+
+    return result.rows[0] ? mapArticle(result.rows[0]) : null;
+  }, null);
 }
 
 export async function getCategoriesFromStore() {
@@ -168,8 +188,17 @@ export async function getCategoriesFromStore() {
 }
 
 export async function getCategoryBySlugFromStore(slug: string) {
-  const categories = await getCategoriesFromStore();
-  return categories.find((category) => category.slug === slug);
+  return withFallback(async () => {
+    const pool = getDbPool();
+    if (!pool) return null;
+
+    const result = await pool.query<CategoryRow>(
+      `SELECT slug, title, short_description, seo_title, meta_description, seed_ideas FROM runpsy_categories WHERE slug = $1`,
+      [slug]
+    );
+
+    return result.rows[0] ? mapCategory(result.rows[0]) : null;
+  }, null);
 }
 
 export async function getAuthorsFromStore() {
@@ -190,17 +219,68 @@ export async function getAuthorsFromStore() {
 }
 
 export async function getAuthorBySlugFromStore(slug: string) {
-  const authors = await getAuthorsFromStore();
-  return authors.find((author) => author.slug === slug);
+  return withFallback(async () => {
+    const pool = getDbPool();
+    if (!pool) return null;
+
+    const result = await pool.query<AuthorRow>(
+      `SELECT slug, name, role, bio, credentials FROM runpsy_authors WHERE slug = $1`,
+      [slug]
+    );
+
+    return result.rows[0] ? mapAuthor(result.rows[0]) : null;
+  }, null);
 }
 
 export async function getRelatedArticlesFromStore(slugs: string[]) {
-  const articles = await getPublishedArticlesFromStore();
-  return articles.filter((article) => slugs.includes(article.slug));
+  if (slugs.length === 0) return [];
+  
+  return withFallback(async () => {
+    const pool = getDbPool();
+    if (!pool) return [] as Article[];
+
+    const result = await pool.query<ArticleRow>(
+      `
+        SELECT
+          a.slug, a.title, a.description, a.date::text AS date, a.updated::text AS updated,
+          a.author_slug, a.category_slug, a.tags, a.reading_time, a.hero_image,
+          a.seo_title, a.seo_description, a.status, a.intent, a.cta,
+          a.safety_note, a.introduction, a.related_slugs, a.insight_impulse,
+          a.sections, a.faq, a.quiz, au.name AS author_name
+        FROM runpsy_articles a
+        JOIN runpsy_authors au ON au.slug = a.author_slug
+        WHERE a.slug = ANY($1) AND a.status = 'published'
+      `,
+      [slugs]
+    );
+
+    return result.rows.map(mapArticle);
+  }, [] as Article[]);
 }
 
-export async function getArticlesByCategoryFromStore(slug: string) {
-  const articles = await getPublishedArticlesFromStore();
-  return articles.filter((article) => article.category === slug);
+export async function getArticlesByCategoryFromStore(categorySlug: string) {
+  return withFallback(async () => {
+    const pool = getDbPool();
+    if (!pool) return [] as Article[];
+
+    const result = await pool.query<ArticleRow>(
+      `
+        SELECT
+          a.slug, a.title, a.description, a.date::text AS date, a.updated::text AS updated,
+          a.author_slug, a.category_slug, a.tags, a.reading_time, a.hero_image,
+          a.seo_title, a.seo_description, a.status, a.intent, a.cta,
+          a.safety_note, a.introduction, a.related_slugs, a.insight_impulse,
+          a.sections, a.faq, a.quiz, au.name AS author_name
+        FROM runpsy_articles a
+        JOIN runpsy_authors au ON au.slug = a.author_slug
+        WHERE a.category_slug = $1 AND a.status = 'published'
+        ORDER BY a.sort_order ASC, a.slug ASC
+      `,
+      [categorySlug]
+    );
+
+    return result.rows.map(mapArticle);
+  }, [] as Article[]);
 }
+
 

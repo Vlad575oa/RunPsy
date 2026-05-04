@@ -1,4 +1,3 @@
-import Script from "next/script";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -9,9 +8,9 @@ import { ArticleDialogueBlock } from "@/components/blog/article-dialogue-block";
 import { ArticleScenariosBlock } from "@/components/blog/article-scenarios-block";
 import { renderGlossaryInline } from "@/components/blog/glossary-inline";
 import { InteractiveQuiz } from "@/components/blog/interactive-quiz";
-import { getArticleBySlugFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
+import { getArticleBySlugFromStore, getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
-import { articleSchema, faqSchema } from "@/lib/schema";
+import { articleSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import type { Article, ArticleSection } from "@/types/article";
 
 type ArticlePageProps = {
@@ -192,24 +191,37 @@ function renderBadAdviceSection(section: ArticleSection, articlePath: string, se
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlugFromStore(slug);
+  const [article, categories] = await Promise.all([
+    getArticleBySlugFromStore(slug),
+    getCategoriesFromStore(),
+  ]);
   if (!article) notFound();
 
+  const category = categories.find((c) => c.slug === article.category);
   const articlePath = `/articles/${article.slug}`;
   const sections = getRenderableSections(article);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-0 py-10 sm:px-6">
-      <Script id={`schema-article-${article.slug}`} type="application/ld+json">
-        {JSON.stringify(articleSchema(article))}
-      </Script>
-      <Script id={`schema-faq-${article.slug}`} type="application/ld+json">
-        {JSON.stringify(faqSchema(article))}
-      </Script>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema(article)) }} />
+      {article.faq.length > 0 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(article)) }} />
+      )}
+      {category && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(category.slug, category.title, article.title, article.slug)) }} />
+      )}
 
-      <Link href="/" className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-white px-4 py-2 text-sm font-semibold text-[var(--accent-deep)] shadow-sm transition hover:border-[var(--accent)] hover:bg-[var(--bg)]">
-        ← Назад
-      </Link>
+      <nav aria-label="breadcrumb" className="mb-4 flex items-center gap-1 text-sm text-[var(--text-soft)]">
+        <Link href="/" className="hover:text-[var(--accent)]">RunPsy</Link>
+        {category && (
+          <>
+            <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+            <Link href={`/categories/${category.slug}`} className="hover:text-[var(--accent)]">{category.title}</Link>
+          </>
+        )}
+        <ChevronRight className="h-3.5 w-3.5 opacity-50" />
+        <span className="truncate text-[var(--text)]">{article.title}</span>
+      </nav>
 
       <article className="mt-4 rounded-none border-y border-[var(--line)] bg-white p-6 shadow-sm sm:rounded-[2rem] sm:border md:p-8">
         <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">{article.intent}</p>

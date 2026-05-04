@@ -10,19 +10,7 @@ export const metadata = buildMetadata({
   path: "/topics",
 });
 
-const ALLOWED_CATEGORIES = new Set([
-  "relationships",
-  "anxiety-and-stress",
-  "attachment-and-intimacy",
-  "social-ident",
-  "neuro-detox",
-  "emotional-maturity",
-  "psychosomatics",
-  "habits-and-motivation",
-]);
-
 export default async function TopicsPage() {
-  let [articles, categories] = await Promise.all([getPublishedArticlesFromStore(), getCategoriesFromStore()]);
-  categories = categories.filter((c) => ALLOWED_CATEGORIES.has(c.slug));
+  const [articles, categories] = await Promise.all([getPublishedArticlesFromStore(), getCategoriesFromStore()]);
   return <ObsidianTopicMap articles={articles} categories={categories} />;
 }

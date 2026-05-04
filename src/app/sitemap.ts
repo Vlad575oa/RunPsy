@@ -7,6 +7,8 @@ import {
 
 const SITE_URL = "https://runpsy.ru";
 
+export const dynamic = "force-dynamic";
+
 const ALLOWED_CATEGORIES = new Set([
   "relationships",
   "anxiety-and-stress",
@@ -16,6 +18,22 @@ const ALLOWED_CATEGORIES = new Set([
   "emotional-maturity",
   "psychosomatics",
   "habits-and-motivation",
+  "boundaries-and-social",
+  "sleep-architecture",
+  "neuro-aesthetics",
+  "crisis-management",
+  "digital-hygiene-2026",
+  "body-awareness",
+  "breakup-recovery",
+  "boundaries-and-communication",
+  "family-and-parenting",
+  "crises-and-breakups",
+  "couple-boundaries",
+  "burnout-and-energy",
+  "male-female-psychology",
+  "habits-and-motivation",
+  "sex-as-protection",
+  "psychosomatics",
 ]);
 
 const staticRoutes = [

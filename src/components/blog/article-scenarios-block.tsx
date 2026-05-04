@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronRight } from "lucide-react";
 
 type ArticleScenariosBlockProps = {
   title: string;
   action: string;
   outcomes: string[];
+  step?: number;
 };
 
-export function ArticleScenariosBlock({ title, action, outcomes }: ArticleScenariosBlockProps) {
+export function ArticleScenariosBlock({ title, action, outcomes, step }: ArticleScenariosBlockProps) {
   const [flipped, setFlipped] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -20,14 +22,20 @@ export function ArticleScenariosBlock({ title, action, outcomes }: ArticleScenar
   const active = tabs[activeTab];
 
   return (
-    <section className="scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Развилка</p>
-        <h2 className="mt-1.5 font-serif text-xl text-[var(--accent-deep)] sm:text-2xl">{title}</h2>
-      </div>
+    <details className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
+      <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
+        <ChevronRight className="h-6 w-6 text-[var(--accent)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
+        <div>
+          <div className="flex items-center gap-2">
+            {step && <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10 text-[10px] font-bold text-[var(--accent)]">{step}</span>}
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Развилка</p>
+          </div>
+          <h2 className="mt-1 font-serif text-xl text-[var(--accent-deep)] sm:text-2xl">{title}</h2>
+        </div>
+      </summary>
 
       {/* Mobile: tabs */}
-      <div className="mt-4 sm:hidden">
+      <div className="mt-6 sm:hidden">
         <div className="flex rounded-2xl bg-[#f5ece0] p-1 gap-1">
           {tabs.map((tab, i) => (
             <button
@@ -105,6 +113,6 @@ export function ArticleScenariosBlock({ title, action, outcomes }: ArticleScenar
           </div>
         </button>
       </div>
-    </section>
+    </details>
   );
 }
