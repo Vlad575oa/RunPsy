@@ -7,6 +7,17 @@ import {
 
 const SITE_URL = "https://runpsy.ru";
 
+const ALLOWED_CATEGORIES = new Set([
+  "relationships",
+  "anxiety-and-stress",
+  "attachment-and-intimacy",
+  "social-ident",
+  "neuro-detox",
+  "emotional-maturity",
+  "psychosomatics",
+  "habits-and-motivation",
+]);
+
 const staticRoutes = [
   "/",
   "/articles",
@@ -26,11 +37,13 @@ const staticRoutes = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [articles, categories, authors] = await Promise.all([
+  let [articles, categories, authors] = await Promise.all([
     getPublishedArticlesFromStore(),
     getCategoriesFromStore(),
     getAuthorsFromStore(),
   ]);
+
+  categories = categories.filter((c) => ALLOWED_CATEGORIES.has(c.slug));
 
   const now = new Date();
 

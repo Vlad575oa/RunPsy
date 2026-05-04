@@ -13,7 +13,18 @@ export const metadata = buildMetadata({
   path: "/",
 });
 
-const PER_PAGE = 10;
+const PER_PAGE = 100;
+
+const ALLOWED_CATEGORIES = new Set([
+  "relationships",
+  "anxiety-and-stress",
+  "attachment-and-intimacy",
+  "social-ident",
+  "neuro-detox",
+  "emotional-maturity",
+  "psychosomatics",
+  "habits-and-motivation",
+]);
 
 type HomePageProps = {
   searchParams?: Promise<{ q?: string; category?: string; page?: string }>;
@@ -25,10 +36,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const category = params?.category?.trim() ?? "";
   const page = Math.max(1, parseInt(params?.page ?? "1", 10));
 
-  const [allArticles, categories] = await Promise.all([
+  let [allArticles, categories] = await Promise.all([
     getPublishedArticlesFromStore(),
     getCategoriesFromStore(),
   ]);
+
+  categories = categories.filter((c) => ALLOWED_CATEGORIES.has(c.slug));
 
   const filtered = allArticles.filter((article) => {
     const matchesQuery = !query || article.title.toLowerCase().includes(query.toLowerCase());
