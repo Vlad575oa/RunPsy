@@ -17,8 +17,29 @@ export function InteractiveQuiz({ slug, quiz }: InteractiveQuizProps) {
   const answeredQuestions = Object.keys(answers).length;
   const allAnswered = answeredQuestions === totalQuestions;
 
-  const result = useMemo(() => {
-    if (!submitted || !allAnswered) return null;
+  function renderResult() {
+    if (quiz.results && quiz.results.length > 0) {
+      // Use the scores from the object format
+      let totalScore = 0;
+      Object.entries(answers).forEach(([qIndexStr, optionIndex]) => {
+        const qIndex = parseInt(qIndexStr, 10);
+        const option = quiz.questions[qIndex].options[optionIndex];
+        if (typeof option === "object" && option !== null) {
+          totalScore += option.score || 0;
+        } else {
+          // fallback to index if no score is found
+          totalScore += optionIndex;
+        }
+      });
+      
+      const matchedResult = quiz.results.find((r) => r.score === totalScore) || quiz.results[quiz.results.length - 1];
+      
+      return {
+        title: "Результат",
+        details: matchedResult.text,
+        recommendation: "Перейдите к практике, описанной в статье.",
+      };
+    }
 
     const bucketCount = Math.max(3, ...quiz.questions.map((question) => question.options.length));
     const scores = Array.from({ length: bucketCount }, () => 0);
@@ -67,7 +88,12 @@ export function InteractiveQuiz({ slug, quiz }: InteractiveQuizProps) {
       details: `Тест показал, что сейчас больше всего мешает неопределенность (${confidence}% ответов в этом паттерне).`,
       recommendation: "Вернитесь к фактам: выпишите, что уже ясно, и выберите один следующий шаг на ближайшие 24 часа.",
     };
-  }, [answers, allAnswered, quiz.questions, submitted, totalQuestions]);
+  }
+
+  const result = useMemo(() => {
+    if (!submitted || !allAnswered) return null;
+    return renderResult();
+  }, [answers, allAnswered, quiz.questions, quiz.results, submitted, totalQuestions]);
 
   function onSelect(questionIndex: number, optionIndex: number) {
     setAnswers((current) => ({
@@ -97,19 +123,23 @@ export function InteractiveQuiz({ slug, quiz }: InteractiveQuizProps) {
             <fieldset key={question.question} className="rounded-xl border border-[var(--line)] bg-white p-4">
               <legend className="px-1 text-sm font-semibold">{question.question}</legend>
               <div className="mt-3 grid gap-2">
-                {question.options.map((option, optionIndex) => (
-                  <label key={option} className="flex items-start gap-3 rounded-xl bg-[var(--bg)] px-3 py-2 text-sm leading-6 text-[var(--text-soft)]">
-                    <input
-                      className="mt-1 accent-[var(--accent)]"
-                      type="radio"
-                      name={`${slug}-quiz-${questionIndex}`}
-                      value={optionIndex}
-                      checked={answers[questionIndex] === optionIndex}
-                      onChange={() => onSelect(questionIndex, optionIndex)}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
+                {question.options.map((option, optionIndex) => {
+                  const labelText = typeof option === "string" ? option : option.text;
+                  const key = typeof option === "string" ? option : option.id;
+                  return (
+                    <label key={key} className="flex items-start gap-3 rounded-xl bg-[var(--bg)] px-3 py-2 text-sm leading-6 text-[var(--text-soft)]">
+                      <input
+                        className="mt-1 accent-[var(--accent)]"
+                        type="radio"
+                        name={`${slug}-quiz-${questionIndex}`}
+                        value={optionIndex}
+                        checked={answers[questionIndex] === optionIndex}
+                        onChange={() => onSelect(questionIndex, optionIndex)}
+                      />
+                      <span>{labelText}</span>
+                    </label>
+                  );
+                })}
               </div>
             </fieldset>
           ))}

@@ -7,7 +7,9 @@ function buildGlossaryHref(articlePath: string, sectionId: string, entrySlug: st
   return `/glossary?from=${encodeURIComponent(from)}#${entrySlug}`;
 }
 
-export function renderGlossaryInline(text: string, articlePath: string, sectionId: string): ReactNode {
+export function renderGlossaryInline(text: string | undefined | null, articlePath: string, sectionId: string): ReactNode {
+  if (!text) return text;
+  
   const matches = [...text.matchAll(glossaryTermPattern)];
   if (!matches.length) return text;
 

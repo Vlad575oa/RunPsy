@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CheckSquare, ChevronDown, MessageSquare, Zap } from "lucide-react";
+import { ChevronDown, Zap } from "lucide-react";
 import { useState } from "react";
 import type { Article } from "@/types/article";
 
@@ -121,8 +121,8 @@ export function ArticleContent({ article, showTitle = true }: { article: Article
                         <p key={j} className="font-[var(--font-lora)] text-[1rem] leading-8 text-[var(--text-soft)]">{p}</p>
                       ))}
 
-                      {isChecklist && ii.checklist.length > 0 && (
-                        <div className="mt-3 rounded-xl border border-emerald-200/50 bg-emerald-50/30 p-4">
+                      {isChecklist && ii.checklist && ii.checklist.length > 0 && (
+                        <div className="mt-3 rounded-xl border border-emerald-200/50 bg-emerald-50/50 p-4">
                           <ul className="space-y-2">
                             {ii.checklist.map((item, k) => (
                               <li key={k} className="flex items-start gap-3 text-sm text-[var(--text-soft)]">
@@ -134,7 +134,7 @@ export function ArticleContent({ article, showTitle = true }: { article: Article
                         </div>
                       )}
 
-                      {isDialogue && ii.dialogue.length > 0 && (
+                      {isDialogue && ii.dialogue && ii.dialogue.length > 0 && (
                         <div className="mt-3 space-y-3">
                           {ii.dialogue.map((d, k) => (
                             <div key={k} className="rounded-xl border border-blue-100/60 bg-blue-50/20 p-4">

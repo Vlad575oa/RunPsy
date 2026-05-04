@@ -8,16 +8,25 @@ export type ArticleFaq = {
   answer: string;
 };
 
+export type ArticleQuizOption = string | { id: string; text: string; score: number };
+
 export type ArticleQuizQuestion = {
+  id?: string;
   question: string;
-  options: string[];
+  options: ArticleQuizOption[];
+};
+
+export type ArticleQuizResult = {
+  score: number;
+  text: string;
 };
 
 export type ArticleQuiz = {
   title: string;
   description: string;
   questions: ArticleQuizQuestion[];
-  resultNote: string;
+  results?: ArticleQuizResult[];
+  resultNote?: string;
 };
 
 export type ArticleDialogueOption = {
@@ -27,24 +36,25 @@ export type ArticleDialogueOption = {
 };
 
 export type ArticleInsightImpulse = {
-  painPoint: string;
-  essence: {
+  painPoint?: string;
+  essence?: {
     title: string;
     text: string;
   }[];
-  microAction: string;
-  checklist: string[];
-  dialogue: ArticleDialogueOption[];
+  microAction?: string;
+  checklist?: string[];
+  dialogue?: ArticleDialogueOption[];
   twoSides: {
     firstTitle: string;
     firstItems: string[];
     secondTitle: string;
     secondItems: string[];
-    bridge: string;
+    bridge?: string;
   };
   visualMetaphor: {
-    title: string;
+    title?: string;
     description: string;
+    imagePrompt?: string;
   };
 };
 

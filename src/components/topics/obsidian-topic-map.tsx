@@ -260,7 +260,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
                       <CircleDot className="h-3.5 w-3.5" />
                       Next step
                     </p>
-                    <p>{selectedArticle.quiz.questions[2]?.options[0]}</p>
+                    <p>{typeof selectedArticle.quiz.questions[0]?.options[0] === 'string' ? selectedArticle.quiz.questions[0]?.options[0] : selectedArticle.quiz.questions[0]?.options[0]?.text}</p>
                   </div>
                   <div className="rounded-2xl border border-[rgba(255,255,255,0.55)] bg-white/55 p-4">
                     <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)]">
