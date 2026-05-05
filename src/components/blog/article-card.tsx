@@ -196,11 +196,6 @@ export function ArticleCard({ article, highlighted = false }: { article: Article
           {preview}{preview.length >= 90 ? "…" : ""}
         </p>
 
-        {/* Футер */}
-        <div className="mt-auto flex items-center justify-between pt-3 text-[11px] text-[var(--text-soft)]">
-          <span>{article.readingTime}</span>
-          <span className="hidden sm:inline opacity-60">{article.date}</span>
-        </div>
       </article>
     </Link>
   );

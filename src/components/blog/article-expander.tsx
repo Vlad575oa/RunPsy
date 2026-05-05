@@ -22,7 +22,7 @@ const CATEGORY_THEMES: Record<string, { icon: string; label: string; badge: stri
 const DEFAULT_THEME = { icon: "📌", label: "Статья", badge: "bg-[rgba(207,107,62,0.07)] border-[rgba(207,107,62,0.2)] text-[var(--accent)]" };
 
 export function ArticleExpander({ article }: { article: Article }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const theme = CATEGORY_THEMES[article.category] ?? DEFAULT_THEME;
   const preview = (article.introduction ?? article.description).slice(0, 100);
 
@@ -42,7 +42,6 @@ export function ArticleExpander({ article }: { article: Article }) {
             <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${theme.badge}`}>
               {theme.label}
             </span>
-            <span className="text-[11px] text-[var(--text-soft)]">{article.readingTime}</span>
           </div>
           <p className="mt-1.5 font-[var(--font-lora)] text-base font-semibold leading-snug text-[var(--text)] sm:text-lg">
             {article.title}
