@@ -65,6 +65,16 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      // Статические ассеты Next.js кешируются на год
+      {
+        source: "/_next/static/:path*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      // Картинки и шрифты из /public — 30 дней
+      {
+        source: "/:path*(\\.(png|jpg|jpeg|webp|svg|ico|woff|woff2))",
+        headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
+      },
     ];
   },
 };
