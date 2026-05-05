@@ -22,7 +22,7 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
   const active = tabs[activeTab];
 
   return (
-    <details defaultOpen className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
+    <details open className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
         <ChevronRight className="h-6 w-6 text-[var(--accent)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
         <div>
