@@ -32,7 +32,6 @@ export function Footer() {
             <li><Link href="/about">О проекте</Link></li>
             <li><Link href="/articles">Статьи</Link></li>
             <li><Link href="/topics">Карта</Link></li>
-            <li><Link href="/resources">Ресурсы</Link></li>
             <li><Link href="/glossary">Словарь</Link></li>
             <li><Link href="/contact">Контакт</Link></li>
           </ul>
@@ -43,7 +42,6 @@ export function Footer() {
             <li><Link href="/privacy">Политика обработки персональных данных</Link></li>
             <li><Link href="/terms">Условия использования</Link></li>
             <li><Link href="/cookies">Настройки файлов Cookie</Link></li>
-            <li><a href="/sitemap.xml">Карта сайта</a></li>
             <li><Link href="/disclaimer">Дисклеймер</Link></li>
             <li><Link href="/editorial-policy">Редакционная политика</Link></li>
           </ul>

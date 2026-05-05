@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { Download, Mail, MessageCircle, Send, Table2 } from "lucide-react";
-import type { PsychologyChecklist, PsychologyTest } from "@/lib/tests-content";
+import type { PsychologyChecklist, PsychologyDialogue, PsychologyTest } from "@/lib/tests-content";
 
 type TestsWorkbenchProps = {
   tests: PsychologyTest[];
   checklists: PsychologyChecklist[];
+  dialogues: PsychologyDialogue[];
 };
 
 const answerOptions = [
@@ -43,15 +44,17 @@ function escapeCsv(value: string) {
   return `"${value.replaceAll('"', '""')}"`;
 }
 
-export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
-  const [mode, setMode] = useState<"tests" | "checklists">("tests");
+export function TestsWorkbench({ tests, checklists, dialogues }: TestsWorkbenchProps) {
+  const [mode, setMode] = useState<"tests" | "checklists" | "dialogues">("tests");
   const [selectedTestId, setSelectedTestId] = useState(tests[0]?.id ?? "");
   const [selectedChecklistId, setSelectedChecklistId] = useState(checklists[0]?.id ?? "");
+  const [selectedDialogueId, setSelectedDialogueId] = useState(dialogues[0]?.id ?? "");
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
 
   const selectedTest = tests.find((test) => test.id === selectedTestId) ?? tests[0];
   const selectedChecklist = checklists.find((checklist) => checklist.id === selectedChecklistId) ?? checklists[0];
+  const selectedDialogue = dialogues.find((d) => d.id === selectedDialogueId) ?? dialogues[0];
 
   const testScore = selectedTest.questions.reduce((sum, question) => sum + (answers[question] ?? 0), 0);
   const maxScore = selectedTest.questions.length * 2;
@@ -116,10 +119,11 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
               id="mode-select"
               className="w-full appearance-none rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition focus:border-[var(--accent)]"
               value={mode}
-              onChange={(e) => setMode(e.target.value as "tests" | "checklists")}
+              onChange={(e) => setMode(e.target.value as "tests" | "checklists" | "dialogues")}
             >
               <option value="tests">Тесты</option>
               <option value="checklists">Чек-листы</option>
+              <option value="dialogues">Диалоги</option>
             </select>
           </div>
           <div>
@@ -129,19 +133,21 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
             <select
               id="item-select"
               className="w-full appearance-none rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm font-semibold text-[var(--text)] transition focus:border-[var(--accent)]"
-              value={mode === "tests" ? selectedTestId : selectedChecklistId}
+              value={mode === "tests" ? selectedTestId : mode === "checklists" ? selectedChecklistId : selectedDialogueId}
               onChange={(e) => {
                 const id = e.target.value;
                 if (mode === "tests") {
                   setSelectedTestId(id);
                   setAnswers({});
-                } else {
+                } else if (mode === "checklists") {
                   setSelectedChecklistId(id);
                   setChecked({});
+                } else {
+                  setSelectedDialogueId(id);
                 }
               }}
             >
-              {(mode === "tests" ? tests : checklists).map((item) => (
+              {(mode === "tests" ? tests : mode === "checklists" ? checklists : dialogues).map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.title}
                 </option>
@@ -151,7 +157,7 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
         </div>
 
         {/* Десктопная версия переключателей */}
-        <div className="hidden grid-cols-2 gap-2 md:grid">
+        <div className="hidden grid-cols-3 gap-2 md:grid">
           <button
             className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === "tests" ? "bg-[var(--accent)] text-white" : "bg-[var(--bg)] text-[var(--text-soft)]"}`}
             type="button"
@@ -165,6 +171,13 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
             onClick={() => setMode("checklists")}
           >
             Чек-листы
+          </button>
+          <button
+            className={`rounded-xl px-3 py-2 text-sm font-semibold transition ${mode === "dialogues" ? "bg-[var(--accent)] text-white" : "bg-[var(--bg)] text-[var(--text-soft)]"}`}
+            type="button"
+            onClick={() => setMode("dialogues")}
+          >
+            Диалоги
           </button>
         </div>
 
@@ -187,7 +200,8 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
                   <span className="mt-1 block text-sm font-semibold">{test.title}</span>
                 </button>
               ))
-            : checklists.map((checklist) => (
+            : mode === "checklists"
+            ? checklists.map((checklist) => (
                 <button
                   key={checklist.id}
                   className={`w-full rounded-xl border p-3 text-left transition ${
@@ -201,6 +215,19 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
                 >
                   <span className="text-[11px] uppercase tracking-[0.08em] text-[var(--accent)]">{checklist.category}</span>
                   <span className="mt-1 block text-sm font-semibold">{checklist.title}</span>
+                </button>
+              ))
+            : dialogues.map((dialogue) => (
+                <button
+                  key={dialogue.id}
+                  className={`w-full rounded-xl border p-3 text-left transition ${
+                    selectedDialogue.id === dialogue.id ? "border-[#d6deef] bg-[#f2f6ff]" : "border-[var(--line)] bg-[var(--bg)] hover:bg-white"
+                  }`}
+                  type="button"
+                  onClick={() => setSelectedDialogueId(dialogue.id)}
+                >
+                  <span className="text-[11px] uppercase tracking-[0.08em] text-[#5d6fa6]">{dialogue.category}</span>
+                  <span className="mt-1 block text-sm font-semibold">{dialogue.step}. {dialogue.title}</span>
                 </button>
               ))}
         </div>
@@ -251,7 +278,7 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
               onExcel={exportExcel}
             />
           </>
-        ) : (
+        ) : mode === "checklists" ? (
           <>
             <p className="text-xs uppercase tracking-[0.08em] text-[var(--accent)]">{selectedChecklist.category}</p>
             <h2 className="mt-2 font-serif text-3xl">{selectedChecklist.title}</h2>
@@ -279,6 +306,62 @@ export function TestsWorkbench({ tests, checklists }: TestsWorkbenchProps) {
               onWord={exportWord}
               onExcel={exportExcel}
             />
+          </>
+        ) : (
+          <>
+            <p className="text-xs uppercase tracking-[0.08em] text-[#5d6fa6]">{selectedDialogue.category}</p>
+            <div className="mt-2 flex items-center gap-3">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#5d6fa6]/10 text-sm font-bold text-[#5d6fa6]">
+                {selectedDialogue.step}
+              </span>
+              <h2 className="font-serif text-3xl text-[#22263a]">{selectedDialogue.title}</h2>
+            </div>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--text-soft)]">{selectedDialogue.description}</p>
+
+            <div className="mt-6 divide-y divide-[#e4eaf5] rounded-2xl border border-[#d6deef] bg-[linear-gradient(180deg,#fbfcff_0%,#f2f6ff_100%)] px-5 shadow-[0_12px_36px_rgba(52,76,136,0.07)]">
+              {selectedDialogue.items.map((item, index) => (
+                <div key={index} className="py-4">
+                  {item.trigger ? (
+                    <p className="mb-2 text-sm text-[#7f8db8]">
+                      <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.14em]">Триггер:</span>
+                      {item.trigger}
+                    </p>
+                  ) : null}
+                  <p className="text-sm leading-6 text-[#22263a]">
+                    <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1f7a63]">Ответ:</span>
+                    {item.response}
+                  </p>
+                  {item.note ? <p className="mt-1.5 text-xs leading-5 text-[var(--text-soft)]">{item.note}</p> : null}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-[#d6deef] bg-[#f2f6ff]/80 p-5">
+              <p className="text-xs uppercase tracking-[0.08em] text-[#5d6fa6]">Как использовать</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">
+                Прочитайте фразы заранее, адаптируйте под свой стиль речи. В момент триггера используйте как опорную точку, а не дословный скрипт.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <a
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#5d6fa6]"
+                  href={"https://t.me/share/url?url=https://runpsy.ru/tests&text=" + encodeURIComponent("RunPsy диалог: " + selectedDialogue.title + "\nhttps://runpsy.ru/tests")}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Send className="h-4 w-4" />
+                  Telegram
+                </a>
+                <a
+                  className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#5d6fa6]"
+                  href={"https://wa.me/?text=" + encodeURIComponent("RunPsy диалог: " + selectedDialogue.title + "\nhttps://runpsy.ru/tests")}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
           </>
         )}
       </section>

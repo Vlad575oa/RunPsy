@@ -22,7 +22,7 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
   const active = tabs[activeTab];
 
   return (
-    <details className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
+    <details defaultOpen className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
         <ChevronRight className="h-6 w-6 text-[var(--accent)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
         <div>
@@ -69,7 +69,6 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
 
       {/* Desktop: flip card */}
       <div className="hidden sm:block">
-        <p className="mt-4 text-xs text-[var(--text-soft)]">Нажмите на карточку, чтобы перевернуть</p>
         <button
           type="button"
           onClick={() => setFlipped((v) => !v)}
@@ -84,15 +83,17 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
                 className="absolute inset-0 rounded-[1.8rem] border border-[#f0e0ca] bg-white px-6 py-6 shadow-[0_18px_44px_rgba(111,45,26,0.08)]"
                 style={{ backfaceVisibility: "hidden" }}
               >
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Лицевая сторона</p>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center rounded-full bg-[var(--accent)]/10 p-1.5 text-[var(--accent)]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                      <path d="M3 3v5h5"/>
+                    </svg>
+                  </div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Лицевая сторона · нажмите, чтобы перевернуть</p>
+                </div>
                 <h3 className="mt-4 font-serif text-3xl leading-tight text-[var(--text)]">Что вы делаете дальше</h3>
                 <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--text-soft)]">{action}</p>
-                <div className="mt-6 inline-flex items-center justify-center rounded-full border border-[var(--line)] p-2 text-[var(--text-soft)]">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <path d="M3 3v5h5"/>
-                  </svg>
-                </div>
               </div>
 
               <div

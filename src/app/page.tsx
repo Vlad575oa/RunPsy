@@ -1,7 +1,7 @@
 import { ArticleCard } from "@/components/blog/article-card";
 import { Pagination } from "@/components/blog/pagination";
 import { SearchForm } from "@/components/blog/search-form";
-import { getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
+import { getCategoriesFromStore, getPublishedArticlesFromStore, searchArticlesFromStore } from "@/lib/content-store";
 import { buildMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -15,17 +15,6 @@ export const metadata = buildMetadata({
 
 const PER_PAGE = 100;
 
-const ALLOWED_CATEGORIES = new Set([
-  "relationships",
-  "anxiety-and-stress",
-  "attachment-and-intimacy",
-  "social-ident",
-  "neuro-detox",
-  "emotional-maturity",
-  "psychosomatics",
-  "habits-and-motivation",
-]);
-
 type HomePageProps = {
   searchParams?: Promise<{ q?: string; category?: string; page?: string }>;
 };
@@ -36,18 +25,24 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const category = params?.category?.trim() ?? "";
   const page = Math.max(1, parseInt(params?.page ?? "1", 10));
 
-  let [allArticles, categories] = await Promise.all([
+  const [allArticles, allCategories] = await Promise.all([
     getPublishedArticlesFromStore(),
     getCategoriesFromStore(),
   ]);
 
-  categories = categories.filter((c) => ALLOWED_CATEGORIES.has(c.slug));
+  // Показываем только категории у которых есть хотя бы одна опубликованная статья
+  const categorySlugsWithArticles = new Set(allArticles.map((a) => a.category));
+  const categories = allCategories.filter((c) => categorySlugsWithArticles.has(c.slug));
 
-  const filtered = allArticles.filter((article) => {
-    const matchesQuery = !query || article.title.toLowerCase().includes(query.toLowerCase());
-    const matchesCategory = !category || article.category === category;
-    return matchesQuery && matchesCategory;
-  });
+  let filtered: typeof allArticles;
+  if (query) {
+    // Full-text search via PostgreSQL (falls back to JS substring match)
+    filtered = await searchArticlesFromStore(query, category || undefined, allArticles);
+  } else {
+    filtered = category
+      ? allArticles.filter((a) => a.category === category)
+      : allArticles;
+  }
 
   const total = filtered.length;
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);

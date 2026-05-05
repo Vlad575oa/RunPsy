@@ -15,7 +15,7 @@ type ArticleDialogueBlockProps = {
 
 export function ArticleDialogueBlock({ title, items, step }: ArticleDialogueBlockProps) {
   return (
-    <details className="group scroll-mt-24 rounded-2xl border border-[#d6deef] bg-[linear-gradient(180deg,#fbfcff_0%,#f2f6ff_100%)] p-5 shadow-[0_12px_36px_rgba(52,76,136,0.07)]">
+    <details open className="group scroll-mt-24 rounded-2xl border border-[#d6deef] bg-[linear-gradient(180deg,#fbfcff_0%,#f2f6ff_100%)] p-5 shadow-[0_12px_36px_rgba(52,76,136,0.07)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
         <ChevronRight className="h-6 w-6 text-[#5d6fa6] transition-transform duration-200 group-open:rotate-90 shrink-0" />
         <div>

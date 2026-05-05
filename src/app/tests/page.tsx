@@ -1,6 +1,6 @@
 import Script from "next/script";
 import { TestsWorkbench } from "@/components/tests/tests-workbench";
-import { psychologyChecklists, psychologyTests } from "@/lib/tests-content";
+import { psychologyChecklists, psychologyDialogues, psychologyTests } from "@/lib/tests-content";
 import { buildMetadata, siteUrl } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -42,7 +42,7 @@ export default function TestsPage() {
         </p>
       </section>
 
-      <TestsWorkbench tests={psychologyTests} checklists={psychologyChecklists} />
+      <TestsWorkbench tests={psychologyTests} checklists={psychologyChecklists} dialogues={psychologyDialogues} />
     </div>
   );
 }

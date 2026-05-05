@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
@@ -8,7 +9,8 @@ import { ArticleDialogueBlock } from "@/components/blog/article-dialogue-block";
 import { ArticleScenariosBlock } from "@/components/blog/article-scenarios-block";
 import { renderGlossaryInline } from "@/components/blog/glossary-inline";
 import { InteractiveQuiz } from "@/components/blog/interactive-quiz";
-import { getArticleBySlugFromStore, getCategoriesFromStore, getPublishedArticlesFromStore } from "@/lib/content-store";
+import { getArticleBySlugFromStore, getCategoriesFromStore, getPublishedArticlesFromStore, getReadNextArticles } from "@/lib/content-store";
+import { RelatedArticles } from "@/components/blog/related-articles";
 import { buildMetadata } from "@/lib/seo";
 import { articleSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";
 import type { Article, ArticleSection } from "@/types/article";
@@ -28,6 +30,7 @@ const isDialogueTitle = (title: string) => title.toLowerCase().includes("кон�
 const isScenarioTitle = (title: string) => title.toLowerCase().includes("сценарии 50/50");
 const isModelTitle = (title: string) => title.toLowerCase().includes("почему это происходит");
 const isBadAdviceTitle = (title: string) => title.toLowerCase().includes("плохие советы");
+const isResearchTitle = (title: string) => title.toLowerCase().includes("исследования");
 
 export const dynamic = "force-dynamic";
 
@@ -141,7 +144,7 @@ function renderDefaultParagraphs(paragraphs: string[], articlePath: string, sect
 function renderModelSection(section: ArticleSection, articlePath: string, sectionId: string, step: number) {
   const [lead, ...details] = section.paragraphs;
   return (
-    <details id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#d7deeb] bg-[linear-gradient(180deg,#ffffff_0%,#f7f9fd_100%)] p-6 shadow-[0_18px_44px_rgba(38,45,67,0.06)]">
+    <details open id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#d7deeb] bg-[linear-gradient(180deg,#ffffff_0%,#f7f9fd_100%)] p-6 shadow-[0_18px_44px_rgba(38,45,67,0.06)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
         <ChevronRight className="h-6 w-6 text-[#5d6fa6] transition-transform duration-200 group-open:rotate-90 shrink-0" />
         <div>
@@ -167,7 +170,7 @@ function renderModelSection(section: ArticleSection, articlePath: string, sectio
 
 function renderBadAdviceSection(section: ArticleSection, articlePath: string, sectionId: string, step: number) {
   return (
-    <details id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#f0d2d2] bg-[#fff9f9] p-6 shadow-[0_16px_40px_rgba(120,36,36,0.06)]">
+    <details open id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#f0d2d2] bg-[#fff9f9] p-6 shadow-[0_16px_40px_rgba(120,36,36,0.06)]">
       <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
         <ChevronRight className="h-6 w-6 text-[#b24747] transition-transform duration-200 group-open:rotate-90 shrink-0" />
         <div>
@@ -198,6 +201,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   if (!article) notFound();
 
   const category = categories.find((c) => c.slug === article.category);
+  const relatedArticles = await getReadNextArticles(article.slug, article.relatedSlugs, article.category, 3);
   const articlePath = `/articles/${article.slug}`;
   const sections = getRenderableSections(article);
 
@@ -211,7 +215,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema(category.slug, category.title, article.title, article.slug)) }} />
       )}
 
-      <nav aria-label="breadcrumb" className="mb-4 flex items-center gap-1 text-sm text-[var(--text-soft)]">
+      <nav aria-label="breadcrumb" className="mb-4 hidden items-center gap-1 text-sm text-[var(--text-soft)] sm:flex">
         <Link href="/" className="hover:text-[var(--accent)]">RunPsy</Link>
         {category && (
           <>
@@ -223,9 +227,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <span className="truncate text-[var(--text)]">{article.title}</span>
       </nav>
 
-      <article className="mt-4 rounded-none border-y border-[var(--line)] bg-white p-6 shadow-sm sm:rounded-[2rem] sm:border md:p-8">
+      <article className="mt-4 overflow-hidden rounded-none border-y border-[var(--line)] bg-white shadow-sm sm:rounded-[2rem] sm:border">
+        {/* Hero image */}
+        <div className="relative aspect-[21/9] w-full overflow-hidden">
+          <Image
+            src={article.heroImage ?? "/images/articles/placeholder.webp"}
+            alt={article.title}
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, (max-width: 1200px) 90vw, 1200px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/60" />
+        </div>
+
+        <div className="p-6 md:p-8">
         <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">{article.intent}</p>
-        <h1 className="mt-3 max-w-4xl font-serif text-4xl leading-[1.02] text-[var(--text)] md:text-6xl">{article.title}</h1>
+        <h1 className="mt-3 max-w-4xl font-serif text-2xl leading-[1.1] text-[var(--text)] sm:text-4xl md:text-6xl md:leading-[1.02]">{article.title}</h1>
         <section className="mt-8 rounded-[2rem] border border-[#e8e0d5] bg-[linear-gradient(135deg,rgba(251,244,234,0.8),rgba(255,250,245,0.95))] p-6 shadow-[0_14px_40px_rgba(111,45,26,0.07)]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Введение в проблему</p>
           <div className="mt-4 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
@@ -235,7 +253,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </section>
         
-        <details className="group mt-8 rounded-[2rem] border border-[#cfe3da] bg-[linear-gradient(135deg,rgba(208,247,232,0.7),rgba(255,247,238,0.95))] p-6 shadow-[0_18px_48px_rgba(23,97,79,0.10)]">
+        <details open className="group mt-8 rounded-[2rem] border border-[#cfe3da] bg-[linear-gradient(135deg,rgba(208,247,232,0.7),rgba(255,247,238,0.95))] p-6 shadow-[0_18px_48px_rgba(23,97,79,0.10)]">
           <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
             <ChevronRight className="h-6 w-6 text-[#17614f] transition-transform duration-200 group-open:rotate-90 shrink-0" />
             <div>
@@ -271,6 +289,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             if (section.title === "Суть за 30 секунд") return null;
             if (isModelTitle(section.title)) return <div key={sectionId}>{renderModelSection(section, articlePath, sectionId, index + 1)}</div>;
             if (isBadAdviceTitle(section.title)) return <div key={sectionId}>{renderBadAdviceSection(section, articlePath, sectionId, index + 1)}</div>;
+            if (isResearchTitle(section.title)) {
+              return (
+                <details open id={sectionId} key={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#b3c8e8] bg-[#f0f6ff] p-6 shadow-[0_18px_44px_rgba(30,80,160,0.07)]">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
+                    <ChevronRight className="h-6 w-6 shrink-0 text-[#2563a8] transition-transform duration-200 group-open:rotate-90" />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#2563a8]/10 text-[10px] font-bold text-[#2563a8]">{index + 1}</span>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563a8]">Раздел</p>
+                      </div>
+                      <h2 className="mt-1 font-serif text-2xl text-[#1a3a6b]">🧠 {section.title}</h2>
+                    </div>
+                  </summary>
+                  <div className="mt-4 space-y-3 pl-9">
+                    {section.paragraphs.map((paragraph, pIndex) => (
+                      <p key={pIndex} className="leading-relaxed text-[var(--text)]">
+                        {renderGlossaryInline(paragraph, articlePath, sectionId)}
+                      </p>
+                    ))}
+                  </div>
+                </details>
+              );
+            }
             if (isDialogueTitle(section.title)) {
               return <ArticleDialogueBlock key={sectionId} title={section.title} items={dialogueItems} />;
             }
@@ -290,6 +331,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
             return (
               <details
+                open
                 id={sectionId}
                 key={sectionId}
                 className={`group scroll-mt-24 rounded-[2rem] border p-6 ${
@@ -316,7 +358,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           })}
 
           {article.safetyNote ? (
-            <details className="group rounded-2xl border border-[#e7bd9f] bg-[#fff4ea] p-6">
+            <details open className="group rounded-2xl border border-[#e7bd9f] bg-[#fff4ea] p-6">
               <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
                 <ChevronRight className="h-6 w-6 text-[var(--accent-deep)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
                 <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Важная оговорка</h2>
@@ -326,7 +368,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           ) : null}
 
           <section className="rounded-2xl border border-[#e7d9bf] bg-[#fff8ec] p-6">
-            <details className="group">
+            <details open className="group">
               <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
                 <ChevronRight className="h-5 w-5 text-[var(--accent-deep)] transition-transform duration-200 group-open:rotate-90" />
                 <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Вопросы и ответы</h2>
@@ -346,6 +388,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </section>
 
           <InteractiveQuiz slug={article.slug} quiz={article.quiz} />
+
+          <RelatedArticles articles={relatedArticles} categoryTitle={category?.title} />
+        </div>
         </div>
       </article>
     </div>

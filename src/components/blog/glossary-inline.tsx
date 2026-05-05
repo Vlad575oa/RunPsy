@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import { getGlossaryEntryByMatch, glossaryTermPattern } from "@/lib/glossary";
 
-function buildGlossaryHref(articlePath: string, sectionId: string, entrySlug: string) {
+function buildGlossaryHref(articlePath: string, sectionId: string, entrySlug: string, articleLink?: string) {
+  if (articleLink) return articleLink;
   const from = `${articlePath}#${sectionId}`;
   return `/glossary?from=${encodeURIComponent(from)}#${entrySlug}`;
 }
@@ -30,7 +31,7 @@ export function renderGlossaryInline(text: string | undefined | null, articlePat
       nodes.push(
         <Link
           key={`${entry.slug}-${start}-${index}`}
-          href={buildGlossaryHref(articlePath, sectionId, entry.slug)}
+          href={buildGlossaryHref(articlePath, sectionId, entry.slug, entry.articleLink)}
           className="rounded-[0.35rem] border border-black/10 bg-black/[0.03] px-1 py-0.5 text-[0.95em] font-medium text-[var(--text)] underline decoration-[0.08em] underline-offset-[0.16em] transition hover:border-[var(--accent)] hover:bg-[#fff2e6] hover:text-[var(--accent-deep)]"
           title={`Открыть термин: ${entry.term}`}
         >

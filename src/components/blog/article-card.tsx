@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Article } from "@/types/article";
 import { isUpdatedArticle } from "@/lib/updated-articles";
@@ -176,25 +177,40 @@ export function ArticleCard({ article, highlighted = false }: { article: Article
 
   return (
     <Link href={`/articles/${article.slug}`} className="block h-full rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]">
-      <article className={`group flex h-full flex-col rounded-2xl border p-4 transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-5 ${theme.border} ${theme.bg}`}>
+      <article className={`group flex h-full flex-col rounded-2xl border transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${theme.border} ${theme.bg}`}>
 
-        {/* Иконка + категория */}
-        <div className="flex items-center gap-2">
-          <span className="text-lg">{theme.icon}</span>
-          <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${theme.badge}`}>
-            {theme.label}
-          </span>
+        {/* Картинка */}
+        {(article.heroImage ?? "/images/articles/placeholder.webp") && (
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-2xl">
+            <Image
+              src={article.heroImage ?? "/images/articles/placeholder.webp"}
+              alt={article.title}
+              fill
+              className="object-cover transition duration-300 group-hover:scale-[1.03]"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          </div>
+        )}
+
+        <div className="flex flex-1 flex-col p-4 sm:p-5">
+          {/* Иконка + категория */}
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{theme.icon}</span>
+            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${theme.badge}`}>
+              {theme.label}
+            </span>
+          </div>
+
+          {/* Заголовок */}
+          <h3 className={`mt-3 font-[var(--font-lora)] text-sm font-semibold leading-snug sm:text-base ${theme.accent}`}>
+            {article.title}
+          </h3>
+
+          {/* Превью */}
+          <p className="mt-2 text-xs leading-5 text-[var(--text-soft)] sm:text-sm sm:leading-6">
+            {preview}{preview.length >= 90 ? "…" : ""}
+          </p>
         </div>
-
-        {/* Заголовок */}
-        <h3 className={`mt-3 font-[var(--font-lora)] text-sm font-semibold leading-snug sm:text-base ${theme.accent}`}>
-          {article.title}
-        </h3>
-
-        {/* Превью */}
-        <p className="mt-2 text-xs leading-5 text-[var(--text-soft)] sm:text-sm sm:leading-6">
-          {preview}{preview.length >= 90 ? "…" : ""}
-        </p>
 
       </article>
     </Link>

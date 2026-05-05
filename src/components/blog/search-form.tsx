@@ -90,7 +90,7 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
           {filterOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setFilterOpen(false)} />
-              <div className="absolute left-0 top-full z-20 mt-2 w-64 overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-xl">
+              <div className="absolute left-0 top-full z-20 mt-2 w-72 overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-xl">
                 <button onClick={() => selectCategory("")}
                   className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] ${!currentCategory ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text-soft)]"}`}>
                   Все категории
@@ -99,8 +99,8 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
                 {categories.map((category) => (
                   <button key={category.slug} onClick={() => selectCategory(category.slug)}
                     className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] ${currentCategory === category.slug ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text)]"}`}>
-                    {currentCategory === category.slug && <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />}
-                    {category.title}
+                    {currentCategory === category.slug && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />}
+                    <span className="truncate">{category.title}</span>
                   </button>
                 ))}
               </div>

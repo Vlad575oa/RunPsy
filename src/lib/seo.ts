@@ -27,7 +27,7 @@ export function buildMetadata({
   image?: string;
 }): Metadata {
   const canonical = `${siteUrl}${path}`;
-  const ogImage = image ?? `${siteUrl}/og-default.png`;
+  const ogImage = image ?? `${siteUrl}/og-default.webp`;
 
   return {
     title,
