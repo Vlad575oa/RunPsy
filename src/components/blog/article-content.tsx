@@ -1,9 +1,41 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Zap } from "lucide-react";
+import { ChevronDown, Globe, Zap } from "lucide-react";
 import { useState } from "react";
 import type { Article } from "@/types/article";
+
+function renderWithLinks(text: string) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\)|\[(?:https?:\/\/[^\]]+)\])/g);
+  return parts.map((part, i) => {
+    const bracketUrl = part.match(/^\[(https?:\/\/[^\]]+)\]$/);
+    if (bracketUrl) {
+      return (
+        <a
+          key={i}
+          href={bracketUrl[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Открыть источник"
+          className="mx-1 inline-flex translate-y-[2px] items-center text-[var(--accent)] hover:opacity-75"
+        >
+          <Globe className="h-4 w-4" />
+        </a>
+      );
+    }
+
+    const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (match) {
+      return (
+        <a key={i} href={match[2]} target="_blank" rel="noopener noreferrer"
+          className="text-[var(--accent)] underline underline-offset-2 hover:opacity-75">
+          {match[1]}
+        </a>
+      );
+    }
+    return part;
+  });
+}
 
 const SECTION_META: Record<string, { icon: string }> = {
   "суть":        { icon: "⚡" },
@@ -118,7 +150,7 @@ export function ArticleContent({ article, showTitle = true }: { article: Article
                   >
                     <div className="space-y-3 px-5 pb-5">
                       {section.paragraphs.map((p, j) => (
-                        <p key={j} className="font-[var(--font-lora)] text-[1rem] leading-8 text-[var(--text-soft)]">{p}</p>
+                        <p key={j} className="font-[var(--font-lora)] text-[1rem] leading-8 text-[var(--text-soft)]">{renderWithLinks(p)}</p>
                       ))}
 
                       {isChecklist && ii.checklist && ii.checklist.length > 0 && (

@@ -22,9 +22,9 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
   const active = tabs[activeTab];
 
   return (
-    <details open className="group scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
-      <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-        <ChevronRight className="h-6 w-6 text-[var(--accent)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
+    <section className="scroll-mt-24 rounded-[2rem] border border-[#eadfcf] bg-[linear-gradient(180deg,#fffdfa_0%,#fbf4ea_100%)] p-5 shadow-[0_18px_52px_rgba(111,45,26,0.08)]">
+      <div className="flex items-center gap-3">
+        <ChevronRight className="h-6 w-6 shrink-0 text-[var(--accent)]" />
         <div>
           <div className="flex items-center gap-2">
             {step && <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--accent)]/10 text-[10px] font-bold text-[var(--accent)]">{step}</span>}
@@ -32,7 +32,7 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
           </div>
           <h2 className="mt-1 font-serif text-xl text-[var(--accent-deep)] sm:text-2xl">{title}</h2>
         </div>
-      </summary>
+      </div>
 
       {/* Mobile: tabs */}
       <div className="mt-6 sm:hidden">
@@ -114,6 +114,6 @@ export function ArticleScenariosBlock({ title, action, outcomes, step }: Article
           </div>
         </button>
       </div>
-    </details>
+    </section>
   );
 }

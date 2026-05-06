@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 
 const staticRoutes = [
   "/",
-  "/articles",
   "/tests",
   "/topics",
   "/about",
@@ -40,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${SITE_URL}${route}`,
     lastModified: now,
     changeFrequency: route === "/" ? "daily" : "weekly",
-    priority: route === "/" ? 1 : route === "/articles" || route === "/tests" ? 0.9 : 0.7,
+    priority: route === "/" ? 1 : route === "/tests" ? 0.9 : 0.7,
   }));
 
   const articleItems: MetadataRoute.Sitemap = articles.map((article) => ({

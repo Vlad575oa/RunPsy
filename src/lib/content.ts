@@ -145,9 +145,34 @@ type ArticleOverride = Partial<Omit<Article, "slug" | "category">> & {
 };
 
 // Переопределения теперь также пусты, так как полные тексты живут в БД.
-const articleOverrides: Partial<Record<string, ArticleOverride>> = {};
+const articleOverrides: Partial<Record<string, ArticleOverride>> = {
+  "emocionalnaya-distanciya-v-pare": { heroImage: "/images/articles/emocionalnaya-distanciya-v-pare.webp" },
+  "gendernye-stereotipy-v-otnosheniyah": { heroImage: "/images/articles/gendernye-stereotipy-v-otnosheniyah.webp" },
+  "kak-ne-monitorit-socseti-byvshego": { heroImage: "/images/articles/kak-ne-monitorit-socseti-byvshego.webp" },
+  "kak-perestat-revnovat": { heroImage: "/images/articles/kak-perestat-revnovat.webp" },
+  "kak-vosstanovit-doverie-posle-lzhi": { heroImage: "/images/articles/kak-vosstanovit-doverie-posle-lzhi.webp" },
+  "lichnye-granicy-v-pare": { heroImage: "/images/articles/lichnye-granicy-v-pare.webp" },
+  "lichnye-granitsy-immunitet": { heroImage: "/images/articles/lichnye-granitsy-immunitet.webp" },
+  "muzhskaya-otvetstvennost-i-zhenskaya-samocennost": { heroImage: "/images/articles/muzhskaya-otvetstvennost-i-zhenskaya-samocennost.webp" },
+  "nejrobiologiya": { heroImage: "/images/articles/nejrobiologiya.webp" },
+  "otnosheniya": { heroImage: "/images/articles/otnosheniya.webp" },
+  "ozhidaniya-i-realnost-v-lyubvi": { heroImage: "/images/articles/ozhidaniya-i-realnost-v-lyubvi.webp" },
+  "pochemu-tyanet-k-nedostupnym-partneram": { heroImage: "/images/articles/pochemu-tyanet-k-nedostupnym-partneram.webp" },
+  "psihologiya-flirta-i-iniciativy": { heroImage: "/images/articles/psihologiya-flirta-i-iniciativy.webp" },
+  "psihologiya-izmeny-i-doverie": { heroImage: "/images/articles/psihologiya-izmeny-i-doverie.webp" },
+  "psihosomatika": { heroImage: "/images/articles/psihosomatika.webp" },
+  "rasstanie-vosstanovlenie": { heroImage: "/images/articles/rasstanie-vosstanovlenie.webp" },
+  "raznitsa-v-vyrazhenii-chuvstv": { heroImage: "/images/articles/raznitsa-v-vyrazhenii-chuvstv.webp" },
+  "son-i-vosstanovlenie": { heroImage: "/images/articles/son-i-vosstanovlenie.webp" },
+  "stadii-gorya-posle-rasstavaniya": { heroImage: "/images/articles/stadii-gorya-posle-rasstavaniya.webp" },
+  "trevoga-stress": { heroImage: "/images/articles/trevoga-stress.webp" },
+  "trevozhnaya-privyazannost": { heroImage: "/images/articles/trevozhnaya-privyazannost.webp" },
+  "tsifrovaya-gigiena": { heroImage: "/images/articles/tsifrovaya-gigiena.webp" },
+  "vygoranie": { heroImage: "/images/articles/vygoranie.webp" },
+  "yazyki-lyubvi-2026": { heroImage: "/images/articles/yazyki-lyubvi-2026.webp" },
+};
 
-export const articles: Article[] = allArticleSeeds.map((seed, index) => {
+export const articles: Article[] = allArticleSeeds.map((seed) => {
   const override = articleOverrides[seed.slug];
   const readingTime = override?.readingTime ?? priorityReadingTime(seed.priority);
 

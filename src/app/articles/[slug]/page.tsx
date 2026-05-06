@@ -9,7 +9,7 @@ import { ArticleDialogueBlock } from "@/components/blog/article-dialogue-block";
 import { ArticleScenariosBlock } from "@/components/blog/article-scenarios-block";
 import { renderGlossaryInline } from "@/components/blog/glossary-inline";
 import { InteractiveQuiz } from "@/components/blog/interactive-quiz";
-import { getArticleBySlugFromStore, getCategoriesFromStore, getPublishedArticlesFromStore, getReadNextArticles } from "@/lib/content-store";
+import { getArticleBySlugFromStore, getCategoriesFromStore, getReadNextArticles } from "@/lib/content-store";
 import { RelatedArticles } from "@/components/blog/related-articles";
 import { buildMetadata } from "@/lib/seo";
 import { articleSchema, breadcrumbSchema, faqSchema } from "@/lib/schema";

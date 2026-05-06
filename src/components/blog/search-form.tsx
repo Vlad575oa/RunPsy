@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, SlidersHorizontal, ChevronDown, X } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import type { Category } from "@/types/article";
 

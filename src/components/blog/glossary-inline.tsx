@@ -8,11 +8,35 @@ function buildGlossaryHref(articlePath: string, sectionId: string, entrySlug: st
   return `/glossary?from=${encodeURIComponent(from)}#${entrySlug}`;
 }
 
+function renderExternalLinks(text: string, keyPrefix: string): ReactNode[] {
+  const parts = text.split(/(\[(?:https?:\/\/[^\]]+)\])/g);
+  return parts.filter(Boolean).map((part, index) => {
+    const bracketUrl = part.match(/^\[(https?:\/\/[^\]]+)\]$/);
+    if (bracketUrl) {
+      return (
+        <a
+          key={`${keyPrefix}-link-${index}`}
+          href={bracketUrl[1]}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Открыть источник"
+          className="mx-1 inline-flex items-center rounded text-[var(--accent)] hover:opacity-75"
+        >
+          🌐
+        </a>
+      );
+    }
+    return <Fragment key={`${keyPrefix}-text-${index}`}>{part}</Fragment>;
+  });
+}
+
 export function renderGlossaryInline(text: string | undefined | null, articlePath: string, sectionId: string): ReactNode {
   if (!text) return text;
   
   const matches = [...text.matchAll(glossaryTermPattern)];
-  if (!matches.length) return text;
+  if (!matches.length) {
+    return <>{renderExternalLinks(text, `${sectionId}-plain`)}</>;
+  }
 
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
@@ -24,7 +48,7 @@ export function renderGlossaryInline(text: string | undefined | null, articlePat
     const entry = getGlossaryEntryByMatch(matchedText);
 
     if (start > lastIndex) {
-      nodes.push(<Fragment key={`text-${index}`}>{text.slice(lastIndex, start)}</Fragment>);
+      nodes.push(...renderExternalLinks(text.slice(lastIndex, start), `text-${index}`));
     }
 
     if (entry) {
@@ -46,7 +70,7 @@ export function renderGlossaryInline(text: string | undefined | null, articlePat
   });
 
   if (lastIndex < text.length) {
-    nodes.push(<Fragment key="tail">{text.slice(lastIndex)}</Fragment>);
+    nodes.push(...renderExternalLinks(text.slice(lastIndex), "tail"));
   }
 
   return nodes;

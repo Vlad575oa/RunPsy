@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { ArticleQuiz } from "@/types/article";
 
 type InteractiveQuizProps = {
@@ -17,7 +17,7 @@ export function InteractiveQuiz({ slug, quiz }: InteractiveQuizProps) {
   const answeredQuestions = Object.keys(answers).length;
   const allAnswered = answeredQuestions === totalQuestions;
 
-  function renderResult() {
+  const renderResult = useCallback(() => {
     if (quiz.results && quiz.results.length > 0) {
       // Use the scores from the object format
       let totalScore = 0;
@@ -88,12 +88,12 @@ export function InteractiveQuiz({ slug, quiz }: InteractiveQuizProps) {
       details: `Тест показал, что сейчас больше всего мешает неопределенность (${confidence}% ответов в этом паттерне).`,
       recommendation: "Вернитесь к фактам: выпишите, что уже ясно, и выберите один следующий шаг на ближайшие 24 часа.",
     };
-  }
+  }, [answers, quiz.questions, quiz.results, totalQuestions]);
 
   const result = useMemo(() => {
     if (!submitted || !allAnswered) return null;
     return renderResult();
-  }, [answers, allAnswered, quiz.questions, quiz.results, submitted, totalQuestions]);
+  }, [allAnswered, renderResult, submitted]);
 
   function onSelect(questionIndex: number, optionIndex: number) {
     setAnswers((current) => ({
