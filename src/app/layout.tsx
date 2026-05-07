@@ -35,6 +35,9 @@ export const metadata: Metadata = {
     "RunPsy: статьи, психологические тесты и чек-листы про отношения, тревогу, границы, расставание, самооценку и выгорание.",
   alternates: {
     canonical: siteUrl,
+    types: {
+      "application/rss+xml": `${siteUrl}/rss.xml`,
+    },
   },
   openGraph: {
     type: "website",
@@ -68,7 +71,7 @@ export default function RootLayout({
       <head>
         <meta
           name="zen-verification"
-          content="eyJhbGciOiJIUzM4NCJ9.eyJwdWJsaXNoZXJJZCI6IjY5ZmI0MmYxMDNkODgyNzk5MTY0Y2U0MiIsInN1YiI6IjY5ZmI0MmYxMDNkODgyNzk5MTY0Y2U0MiIsImlhdCI6MTc3ODEzMjQ3OSwiZXhwIjoxNzc4MTM0Mjc5fQ.p3LdASOSfRDsC7AilL6VyDJVgxp99FaqnmlixL4JOhN9JCnQm7Ne1V4V-6-5Dppz"
+          content="S0XW5Xr0b88PBgzhtceS4iD144BMOSn9SyGryNJnepQihtMnMxg4zxYoMThP8aGL"
         />
       </head>
       <body className="min-h-full">
