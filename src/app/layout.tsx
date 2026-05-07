@@ -65,6 +65,12 @@ export default function RootLayout({
 
   return (
     <html lang="ru" suppressHydrationWarning className={`${manrope.variable} ${merriweather.variable} ${lora.variable} h-full antialiased`}>
+      <head>
+        <meta
+          name="zen-verification"
+          content="eyJhbGciOiJIUzM4NCJ9.eyJwdWJsaXNoZXJJZCI6IjY5ZmI0MmYxMDNkODgyNzk5MTY0Y2U0MiIsInN1YiI6IjY5ZmI0MmYxMDNkODgyNzk5MTY0Y2U0MiIsImlhdCI6MTc3ODEzMjQ3OSwiZXhwIjoxNzc4MTM0Mjc5fQ.p3LdASOSfRDsC7AilL6VyDJVgxp99FaqnmlixL4JOhN9JCnQm7Ne1V4V-6-5Dppz"
+        />
+      </head>
       <body className="min-h-full">
         <Script
           id="yandex-metrika"
