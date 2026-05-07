@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, FileText, Layers, ExternalLink, LogOut } from "lucide-react";
+import { LayoutDashboard, FileText, FileEdit, ExternalLink, LogOut } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/articles", label: "Статьи", icon: FileText, exact: false },
-  { href: "/admin/categories", label: "Категории", icon: Layers, exact: false },
+  { href: "/admin/pages", label: "Страницы", icon: FileEdit, exact: false },
 ];
 
 export default function AdminSidebar() {

@@ -4,6 +4,8 @@ services:
       context: .
     image: runpsy-site:latest
     restart: unless-stopped
+    env_file:
+      - .env.local
     environment:
       NODE_ENV: production
       PORT: 3000
