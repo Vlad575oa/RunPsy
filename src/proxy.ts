@@ -89,7 +89,7 @@ function applyRateLimit(key: string, limit: number, windowMs: number) {
   };
 }
 
-export default function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const userAgent = request.headers.get("user-agent") || "";
   const ip = getClientIp(request);
