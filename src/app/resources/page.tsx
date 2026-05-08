@@ -1,3 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Полезные ресурсы по психологии | RunPsy",
+  description: "Подборка книг, инструментов и ресурсов по психологии отношений, тревоги, самооценки и восстановления от RunPsy.",
+  path: "/resources",
+});
+
 export default function ResourcesPage() {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-10">

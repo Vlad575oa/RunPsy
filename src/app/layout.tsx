@@ -73,6 +73,25 @@ export default function RootLayout({
           name="zen-verification"
           content="S0XW5Xr0b88PBgzhtceS4iD144BMOSn9SyGryNJnepQihtMnMxg4zxYoMThP8aGL"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "RunPsy",
+              url: "https://runpsy.ru",
+              logo: "https://runpsy.ru/og-default.webp",
+              description: "Практичная психология отношений: статьи, тесты и инструменты без воды.",
+              sameAs: [],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer support",
+                url: "https://runpsy.ru/contact",
+              },
+            }),
+          }}
+        />
       </head>
       <body className="min-h-full">
         <Script

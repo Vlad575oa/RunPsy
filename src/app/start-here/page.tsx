@@ -1,4 +1,11 @@
 import Link from "next/link";
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "С чего начать | RunPsy",
+  description: "Не знаете с чего начать? Это руководство поможет разобраться: тесты, статьи и инструменты RunPsy по вашей ситуации.",
+  path: "/start-here",
+});
 
 export default function StartHerePage() {
   return (

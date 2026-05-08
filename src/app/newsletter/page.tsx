@@ -1,3 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Рассылка RunPsy | Психология в письмах",
+  description: "Подпишитесь на рассылку RunPsy: практичные статьи о психологии отношений, тревоге и границах — без спама.",
+  path: "/newsletter",
+});
+
 export default function NewsletterPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">

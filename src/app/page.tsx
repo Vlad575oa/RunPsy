@@ -54,6 +54,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <SearchForm categories={categories} currentCategory={category} currentQuery={query} />
       </section>
 
+      {/* H1 для SEO */}
+      <h1 className="sr-only">Психологические статьи: отношения, тревога, границы, самооценка</h1>
+
       {/* Результат и сетка */}
       <section>
         <div className="mb-4 flex items-center justify-between gap-4">

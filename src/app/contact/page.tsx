@@ -1,3 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Связаться с RunPsy | Написать нам",
+  description: "Напишите нам — разберём ситуацию точечно и без лишнего шума.",
+  path: "/contact",
+});
+
 export default function ContactPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-10">

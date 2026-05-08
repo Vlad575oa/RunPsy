@@ -1,3 +1,11 @@
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "О проекте RunPsy | Психология без воды",
+  description: "RunPsy — проект о том, как строить отношения с собой и другими, опираясь на нейробиологию и доказательную психологию.",
+  path: "/about",
+});
+
 const positioning = {
   promise: "RunPsy — это проект о том, как строить отношения с собой и другими, опираясь на понимание работы мозга. Мы переводим нейробиологию и доказательную психологию на понятный язык.",
   trustSignals: [
