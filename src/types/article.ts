@@ -65,6 +65,7 @@ export type Article = {
   date: string;
   updated?: string;
   author: string;
+  authorSlug: string;
   category: string;
   tags: string[];
   readingTime: string;

@@ -277,7 +277,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </details>
         
-        <p className="mt-4 text-sm text-[var(--text-soft)]">{article.date} · {article.readingTime}</p>
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-soft)]">
+          <Link href={`/authors/${article.authorSlug}`} className="font-semibold text-[var(--text)] hover:underline">
+            {article.author}
+          </Link>
+          <span className="opacity-30">·</span>
+          <time dateTime={article.date}>{article.date}</time>
+          <span className="opacity-30">·</span>
+          <span>{article.readingTime}</span>
+        </div>
 
 <div className="mt-10 space-y-7" id="content">
           {sections.map((section, index) => {

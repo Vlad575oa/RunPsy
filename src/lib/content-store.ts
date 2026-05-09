@@ -52,6 +52,7 @@ function mapArticle(row: ArticleRow): Article {
     date: row.date,
     updated: row.updated ?? undefined,
     author: row.author_name,
+    authorSlug: row.author_slug,
     category: row.category_slug,
     tags: row.tags,
     readingTime: row.reading_time,

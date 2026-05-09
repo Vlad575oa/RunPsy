@@ -14,8 +14,9 @@ export function articleSchema(article: Article) {
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/articles/${article.slug}` },
     publisher: { "@type": "Organization", name: "RunPsy", url: SITE_URL },
     author: {
-      "@type": "Organization",
+      "@type": "Person",
       name: article.author,
+      url: `${SITE_URL}/authors/${article.authorSlug}`,
     },
   };
 }
