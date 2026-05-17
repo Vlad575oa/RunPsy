@@ -1,4 +1,7 @@
-import { ChevronRight } from "lucide-react";
+"use client";
+
+import { MessageCircle, ChevronUp } from "lucide-react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 
 type DialogueItem = {
@@ -13,37 +16,57 @@ type ArticleDialogueBlockProps = {
   step?: number;
 };
 
-export function ArticleDialogueBlock({ title, items, step }: ArticleDialogueBlockProps) {
-  return (
-    <details open className="group scroll-mt-24 rounded-2xl border border-[#d6deef] bg-[linear-gradient(180deg,#fbfcff_0%,#f2f6ff_100%)] p-5 shadow-[0_12px_36px_rgba(52,76,136,0.07)]">
-      <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-        <ChevronRight className="h-6 w-6 text-[#5d6fa6] transition-transform duration-200 group-open:rotate-90 shrink-0" />
-        <div>
-          <div className="flex items-center gap-2">
-            {step && <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#5d6fa6]/10 text-[10px] font-bold text-[#5d6fa6]">{step}</span>}
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5d6fa6]">Инструмент разговора</p>
-          </div>
-          <h2 className="mt-1 font-serif text-xl text-[#22263a]">{title}</h2>
-        </div>
-      </summary>
+export function ArticleDialogueBlock({ title, items }: ArticleDialogueBlockProps) {
+  const [open, setOpen] = useState(true);
 
-      <div className="mt-4 divide-y divide-[#e4eaf5]">
-        {items.map((item, index) => (
-          <div key={index} className="py-3">
-            {item.trigger ? (
-              <p className="mb-1 text-sm text-[#7f8db8]">
-                <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.14em]">Триггер:</span>
-                {item.trigger}
-              </p>
-            ) : null}
-            <p className="text-sm leading-6 text-[#22263a]">
-              <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#1f7a63]">Ответ:</span>
-              {item.response}
-            </p>
-            {item.note ? <p className="mt-1 text-xs leading-5 text-[var(--text-soft)]">{item.note}</p> : null}
+  return (
+    <div className="rounded-2xl border border-[var(--line)] bg-white shadow-sm overflow-hidden">
+      {/* Header */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between px-6 py-5 text-left"
+      >
+        <div className="flex items-center gap-3">
+          <MessageCircle className="h-5 w-5 text-[var(--text-soft)]" />
+          <span className="text-lg font-semibold text-[var(--text)]">{title}</span>
+        </div>
+        <ChevronUp className={`h-5 w-5 text-[var(--text-soft)] transition-transform duration-200 ${open ? "" : "rotate-180"}`} />
+      </button>
+
+      {open && (
+        <div className="px-6 pb-6">
+          {/* Summary lines */}
+          <div className="mb-5 space-y-3">
+            {items.map((item, i) =>
+              item.trigger ? (
+                <p key={i} className="text-base leading-7 text-[var(--text)]">
+                  Вместо «{item.trigger}» — «{item.response}»
+                </p>
+              ) : null
+            )}
           </div>
-        ))}
-      </div>
-    </details>
+
+          {/* Cards */}
+          <div className="space-y-3">
+            {items.map((item, i) => (
+              <div key={i} className="rounded-xl border border-[var(--line)] bg-[var(--bg-soft)] p-4">
+                {item.trigger && (
+                  <p className="mb-2 text-sm text-rose-400 line-through decoration-rose-400">
+                    ✗ {item.trigger}
+                  </p>
+                )}
+                <p className="text-base font-semibold leading-6 text-[var(--text)]">
+                  ✓ {item.response}
+                </p>
+                {item.note && (
+                  <p className="mt-2 text-sm leading-5 text-[var(--text-soft)]">{item.note}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
