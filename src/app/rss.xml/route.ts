@@ -125,6 +125,7 @@ export async function GET() {
       date: r.date,
       updated: r.updated,
       author: r.author_name,
+      authorSlug: r.author_slug,
       category: r.category_slug,
       tags: r.tags ?? [],
       readingTime: r.reading_time ?? "",

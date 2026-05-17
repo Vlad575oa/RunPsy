@@ -43,8 +43,8 @@ export function DialoguesCatalog({ dialogues }: { dialogues: PsychologyDialogue[
   return (
     <>
       {/* Фильтр */}
-      <div className="sticky top-[57px] z-10 -mx-6 bg-white/90 px-6 py-3 backdrop-blur-md border-b border-[var(--line)]">
-        <div className="flex flex-wrap gap-2">
+      <div className="sticky top-[57px] z-10 mt-6 rounded-2xl border border-[var(--line)] bg-white/95 px-5 py-4 shadow-sm backdrop-blur-md">
+        <div className="flex flex-wrap gap-2.5">
           {categories.map((cat) => {
             const style = cat === "Все" ? null : getCategoryStyle(cat);
             return (
@@ -52,12 +52,12 @@ export function DialoguesCatalog({ dialogues }: { dialogues: PsychologyDialogue[
                 key={cat}
                 type="button"
                 onClick={() => setActive(cat)}
-                className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition ${
+                className={`rounded-full border px-4 py-2 text-base font-medium transition ${
                   active === cat
                     ? cat === "Все"
-                      ? "border-[var(--accent)] bg-[var(--accent)] text-white"
-                      : `${style?.bg} ${style?.text} ${style?.border}`
-                    : "border-[var(--line)] bg-white text-[var(--text-soft)] hover:bg-[var(--bg-soft)]"
+                      ? "border-[var(--accent)] bg-[var(--accent)] text-white shadow-sm"
+                      : `${style?.bg} ${style?.text} ${style?.border} shadow-sm`
+                    : "border-[var(--line)] bg-white text-[var(--text-soft)] hover:bg-[var(--bg-soft)] hover:text-[var(--text)]"
                 }`}
               >
                 {cat}
@@ -65,13 +65,13 @@ export function DialoguesCatalog({ dialogues }: { dialogues: PsychologyDialogue[
             );
           })}
         </div>
-        <p className="mt-2 text-xs text-[var(--text-soft)]">
+        <p className="mt-3 text-sm text-[var(--text-soft)]">
           {filtered.length} {filtered.length === 1 ? "диалог" : filtered.length < 5 ? "диалога" : "диалогов"}
         </p>
       </div>
 
       {/* Список диалогов */}
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-5">
         {filtered.map((dialogue) => {
           const style = getCategoryStyle(dialogue.category);
           const isOpen = expanded === dialogue.id;
@@ -94,8 +94,8 @@ export function DialoguesCatalog({ dialogues }: { dialogues: PsychologyDialogue[
                   <span className={`inline-block rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] ${style.bg} ${style.text} ${style.border}`}>
                     {dialogue.category}
                   </span>
-                  <h2 className="mt-1.5 font-serif text-xl text-[#22263a]">{dialogue.title}</h2>
-                  <p className="mt-1 text-sm text-[var(--text-soft)] line-clamp-2">{dialogue.description}</p>
+                  <h2 className="mt-1.5 font-serif text-2xl text-[#22263a]">{dialogue.title}</h2>
+                  <p className="mt-1 text-base text-[var(--text-soft)] line-clamp-2">{dialogue.description}</p>
                 </div>
                 <span className={`mt-1 shrink-0 text-[#5d6fa6] text-lg transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}>
                   ↓

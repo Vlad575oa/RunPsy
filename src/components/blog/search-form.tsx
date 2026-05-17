@@ -53,7 +53,7 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Поиск по названию..."
-            className="min-h-12 w-full rounded-full border border-[var(--line)] bg-[var(--bg)] px-5 text-base outline-none transition placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:bg-white"
+            className="min-h-12 w-full rounded-full border border-[var(--line)] bg-[var(--bg)] px-5 text-base outline-none transition placeholder:text-[var(--text-soft)] focus:border-[var(--accent)] focus:bg-white xl:min-h-14 xl:text-lg xl:px-6"
           />
           {query && (
             <button type="button" onClick={() => { setQuery(""); navigate("", currentCategory); }}
@@ -63,10 +63,10 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
           )}
         </div>
         <button type="submit"
-          className="grid min-h-12 min-w-12 place-items-center rounded-full bg-[var(--accent)] px-4 text-white transition hover:opacity-90 sm:px-7"
+          className="grid min-h-12 min-w-12 place-items-center rounded-full bg-[var(--accent)] px-4 text-white transition hover:opacity-90 sm:px-7 xl:min-h-14 xl:px-9"
           aria-label="Искать">
           <Search className="h-5 w-5 sm:hidden" />
-          <span className="hidden text-sm font-semibold sm:inline">Искать</span>
+          <span className="hidden text-sm font-semibold sm:inline xl:text-base">Искать</span>
         </button>
       </form>
 
@@ -76,7 +76,7 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
         <div className="relative">
           <button type="button" onClick={() => setFilterOpen((v) => !v)}
             className={[
-              "flex min-h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition",
+              "flex min-h-10 items-center gap-2 rounded-full border px-4 text-sm font-semibold transition xl:min-h-12 xl:text-base xl:px-5",
               currentCategory
                 ? "border-[var(--accent)] bg-[rgba(207,107,62,0.08)] text-[var(--accent-deep)]"
                 : "border-[var(--line)] bg-[var(--bg)] text-[var(--text)] hover:border-[var(--accent)]",
@@ -92,13 +92,13 @@ export function SearchForm({ categories, currentCategory, currentQuery }: {
               <div className="fixed inset-0 z-10" onClick={() => setFilterOpen(false)} />
               <div className="absolute left-0 top-full z-20 mt-2 w-72 overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-xl">
                 <button onClick={() => selectCategory("")}
-                  className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] ${!currentCategory ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text-soft)]"}`}>
+                  className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] xl:text-base xl:py-3.5 ${!currentCategory ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text-soft)]"}`}>
                   Все категории
                 </button>
                 <div className="h-px bg-[var(--line)]" />
                 {categories.map((category) => (
                   <button key={category.slug} onClick={() => selectCategory(category.slug)}
-                    className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] ${currentCategory === category.slug ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text)]"}`}>
+                    className={`flex w-full items-center gap-2 px-4 py-3 text-sm transition hover:bg-[var(--bg)] xl:text-base xl:py-3.5 ${currentCategory === category.slug ? "font-semibold text-[var(--accent-deep)]" : "text-[var(--text)]"}`}>
                     {currentCategory === category.slug && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />}
                     <span className="truncate">{category.title}</span>
                   </button>

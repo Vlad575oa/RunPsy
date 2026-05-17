@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { ArticleChecklist } from "@/components/blog/article-checklist";
 import { ArticleDialogueBlock } from "@/components/blog/article-dialogue-block";
 import { ArticleScenariosBlock } from "@/components/blog/article-scenarios-block";
+import { ArticleTOC } from "@/components/blog/article-toc";
 import { renderGlossaryInline } from "@/components/blog/glossary-inline";
 import { InteractiveQuiz } from "@/components/blog/interactive-quiz";
 import { getArticleBySlugFromStore, getCategoriesFromStore, getReadNextArticles } from "@/lib/content-store";
@@ -31,6 +32,7 @@ const isScenarioTitle = (title: string) => title.toLowerCase().includes("сце�
 const isModelTitle = (title: string) => title.toLowerCase().includes("почему это происходит");
 const isBadAdviceTitle = (title: string) => title.toLowerCase().includes("плохие советы");
 const isResearchTitle = (title: string) => title.toLowerCase().includes("исследования");
+const isSourcesTitle = (title: string) => title.toLowerCase().includes("источник");
 
 export const dynamic = "force-dynamic";
 
@@ -141,55 +143,120 @@ function renderDefaultParagraphs(paragraphs: string[], articlePath: string, sect
   ));
 }
 
-function renderModelSection(section: ArticleSection, articlePath: string, sectionId: string, step: number) {
-  const [lead, ...details] = section.paragraphs;
+// Plain text section — numbered heading + flowing text, no card
+function renderTextSection(
+  section: ArticleSection,
+  articlePath: string,
+  sectionId: string,
+  num: number,
+  accentColor = "var(--accent)"
+) {
   return (
-    <details open id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#d7deeb] bg-[linear-gradient(180deg,#ffffff_0%,#f7f9fd_100%)] p-6 shadow-[0_18px_44px_rgba(38,45,67,0.06)]">
-      <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-        <ChevronRight className="h-6 w-6 text-[#5d6fa6] transition-transform duration-200 group-open:rotate-90 shrink-0" />
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#5d6fa6]/10 text-[10px] font-bold text-[#5d6fa6]">{step}</span>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#5d6fa6]">Модель</p>
-          </div>
-          <h2 className="mt-1 font-serif text-2xl text-[#20253a]">{section.title}</h2>
-        </div>
-      </summary>
-      <div className="mt-5 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
-        <p>{renderGlossaryInline(lead, articlePath, sectionId)}</p>
+    <section id={sectionId} className="scroll-mt-24">
+      <h2 className="flex items-baseline gap-2.5 font-serif text-[1.55rem] leading-tight text-[var(--text)]">
+        <span style={{ color: accentColor }} className="shrink-0 text-base font-bold opacity-50">
+          {num}.
+        </span>
+        {section.title}
+      </h2>
+      <div className="mt-4 space-y-4 text-[1.03rem] leading-[1.85] text-[var(--text-soft)]">
+        {renderDefaultParagraphs(section.paragraphs, articlePath, sectionId)}
       </div>
-      {details.length ? (
-        <div className="mt-5 rounded-[1.4rem] border border-[#d7deeb] bg-white/85 p-4">
-          <p className="list-none text-sm font-semibold text-[#445785] marker:content-none mb-3">Углубиться в нейробиологию</p>
-          <div className="space-y-4 text-sm leading-7 text-[var(--text-soft)]">{renderDefaultParagraphs(details, articlePath, sectionId)}</div>
-        </div>
-      ) : null}
-    </details>
+    </section>
   );
 }
 
-function renderBadAdviceSection(section: ArticleSection, articlePath: string, sectionId: string, step: number) {
+// Bad advice — plain flow with strikethrough
+function renderBadAdviceSection(
+  section: ArticleSection,
+  articlePath: string,
+  sectionId: string,
+  num: number
+) {
   return (
-    <details open id={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#f0d2d2] bg-[#fff9f9] p-6 shadow-[0_16px_40px_rgba(120,36,36,0.06)]">
-      <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-        <ChevronRight className="h-6 w-6 text-[#b24747] transition-transform duration-200 group-open:rotate-90 shrink-0" />
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#b24747]/10 text-[10px] font-bold text-[#b24747]">{step}</span>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b24747]">Не работает</p>
-          </div>
-          <h2 className="mt-1 font-serif text-2xl text-[#732525]">{section.title}</h2>
-        </div>
-      </summary>
-      <div className="mt-5 space-y-3 text-[1.03rem] leading-8 text-[#8d5d5d]">
+    <section id={sectionId} className="scroll-mt-24">
+      <h2 className="flex items-baseline gap-2.5 font-serif text-[1.55rem] leading-tight text-[#732525]">
+        <span className="shrink-0 text-base font-bold text-[#b24747] opacity-50">{num}.</span>
+        {section.title}
+      </h2>
+      <div className="mt-4 space-y-3 text-[1.03rem] leading-[1.85] text-[#8d5d5d]">
         {section.paragraphs.map((paragraph, index) => (
-          <p key={`${sectionId}-bad-advice-${index}`} className="decoration-[#d77474] decoration-2 line-through/20">
-            <span className="line-through decoration-[#d77474] decoration-2">{renderGlossaryInline(paragraph, articlePath, sectionId)}</span>
+          <p key={`${sectionId}-bad-${index}`}>
+            <span className="line-through decoration-[#d77474] decoration-2">
+              {renderGlossaryInline(paragraph, articlePath, sectionId)}
+            </span>
           </p>
         ))}
       </div>
-    </details>
+    </section>
   );
+}
+
+// Research section — plain flow, no card
+function renderResearchSection(
+  section: ArticleSection,
+  articlePath: string,
+  sectionId: string,
+  num: number
+) {
+  return (
+    <section id={sectionId} className="scroll-mt-24">
+      <h2 className="flex items-baseline gap-2.5 font-serif text-[1.55rem] leading-tight text-[#1a3a6b]">
+        <span className="shrink-0 text-base font-bold text-[#2563a8] opacity-50">{num}.</span>
+        {section.title}
+      </h2>
+      <div className="mt-4 space-y-4 text-[1.03rem] leading-[1.85] text-[var(--text-soft)]">
+        {renderDefaultParagraphs(section.paragraphs, articlePath, sectionId)}
+      </div>
+    </section>
+  );
+}
+
+function renderSourceText(source: string) {
+  const markdownLinkMatch = source.match(/^\s*\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)\s*$/i);
+  if (markdownLinkMatch) {
+    const [, label, href] = markdownLinkMatch;
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:no-underline">
+        {label}
+      </a>
+    );
+  }
+
+  const urlRegex = /(https?:\/\/[^\s)]+)/gi;
+  const matches = [...source.matchAll(urlRegex)];
+  if (!matches.length) return <span>{source}</span>;
+
+  const nodes: ReactNode[] = [];
+  let cursor = 0;
+
+  matches.forEach((match, index) => {
+    const href = match[0];
+    const start = match.index ?? 0;
+
+    if (start > cursor) {
+      nodes.push(<span key={`txt-${index}`}>{source.slice(cursor, start)}</span>);
+    }
+
+    nodes.push(
+      <a
+        key={`url-${index}`}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline underline-offset-2 hover:no-underline"
+      >
+        {href}
+      </a>,
+    );
+    cursor = start + href.length;
+  });
+
+  if (cursor < source.length) {
+    nodes.push(<span key="txt-last">{source.slice(cursor)}</span>);
+  }
+
+  return <>{nodes}</>;
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
@@ -205,8 +272,19 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const articlePath = `/articles/${article.slug}`;
   const sections = getRenderableSections(article);
 
+  // Build TOC — preserve original index so IDs match DOM (section-${originalIndex+1})
+  // Источники goes last; Сценарии 50/50 excluded (interactive block, not a reading section)
+  const allTocMapped = sections.map((s, i) => ({ id: `section-${i + 1}`, title: s.title }));
+  const mainTocItems = allTocMapped.filter(({ title }) =>
+    title !== "Суть за 30 секунд" &&
+    !isSourcesTitle(title) &&
+    !isScenarioTitle(title)
+  );
+  const sourcesTocItem = allTocMapped.find(({ title }) => isSourcesTitle(title));
+  const tocItems = sourcesTocItem ? [...mainTocItems, sourcesTocItem] : mainTocItems;
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-0 py-10 sm:px-6">
+    <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-0 py-10 sm:px-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema(article)) }} />
       {article.faq.length > 0 && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema(article)) }} />
@@ -228,178 +306,174 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </nav>
 
       <article className="mt-4 overflow-hidden rounded-none border-y border-[var(--line)] bg-white shadow-sm sm:rounded-[2rem] sm:border">
-        {/* Hero image */}
-        <div className="relative aspect-[21/9] w-full overflow-hidden">
-          <Image
-            src={article.heroImage ?? "/images/articles/placeholder.webp"}
-            alt={article.title}
-            fill
-            priority
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 1200px) 90vw, 1200px"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/60" />
+
+        {/* TOP ROW: hero image (left) + TOC (right) — desktop only */}
+        <div className="lg:grid lg:grid-cols-[1fr_240px] lg:items-stretch">
+          {/* Hero image */}
+          <div className="relative aspect-[16/9] w-full overflow-hidden">
+            <Image
+              src={article.heroImage ?? "/images/articles/placeholder.webp"}
+              alt={article.title}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1200px) 80vw, 1160px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/60" />
+          </div>
+
+          {/* TOC — right of hero, desktop only */}
+          <aside className="hidden lg:flex flex-col border-l border-[var(--line)] px-5 py-6">
+            <ArticleTOC items={tocItems} />
+          </aside>
         </div>
 
-        <div className="p-6 md:p-8">
-        <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">{article.intent}</p>
-        <h1 className="mt-3 max-w-4xl font-serif text-2xl leading-[1.1] text-[var(--text)] sm:text-4xl md:text-6xl md:leading-[1.02]">{article.title}</h1>
-        <section className="mt-8 rounded-[2rem] border border-[#e8e0d5] bg-[linear-gradient(135deg,rgba(251,244,234,0.8),rgba(255,250,245,0.95))] p-6 shadow-[0_14px_40px_rgba(111,45,26,0.07)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent)]">Введение в проблему</p>
-          <div className="mt-4 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
+        {/* CONTENT — full width, below hero+TOC */}
+        <div className="p-6 md:p-10">
+          {/* Header */}
+          <p className="text-xs uppercase tracking-[0.16em] text-[var(--accent)]">{article.intent}</p>
+          <h1 className="mt-3 font-serif text-2xl leading-[1.1] text-[var(--text)] sm:text-4xl md:text-5xl md:leading-[1.06]">
+            {article.title}
+          </h1>
+
+          {/* Meta */}
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-soft)]">
+            <Link href={`/authors/${article.authorSlug}`} className="font-semibold text-[var(--text)] hover:underline">
+              {article.author}
+            </Link>
+            <span className="opacity-30">·</span>
+            <time dateTime={article.date}>{article.date}</time>
+            <span className="opacity-30">·</span>
+            <span>{article.readingTime}</span>
+          </div>
+
+          {/* Introduction */}
+          <div className="mt-8 space-y-4 text-[1.08rem] leading-[1.9] text-[var(--text-soft)]">
             {(article.introduction ?? article.description).split("\n\n").map((paragraph, index) => (
               <p key={`intro-${index}`}>{paragraph}</p>
             ))}
           </div>
-        </section>
-        
-        <details open className="group mt-8 rounded-[2rem] border border-[#cfe3da] bg-[linear-gradient(135deg,rgba(208,247,232,0.7),rgba(255,247,238,0.95))] p-6 shadow-[0_18px_48px_rgba(23,97,79,0.10)]">
-          <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-            <ChevronRight className="h-6 w-6 text-[#17614f] transition-transform duration-200 group-open:rotate-90 shrink-0" />
-            <div>
-              <div className="flex items-center gap-2">
-                {(() => {
-                  const essenceIndex = sections.findIndex(s => s.title === "Суть за 30 секунд");
-                  const step = essenceIndex > -1 ? essenceIndex + 1 : 1;
-                  return <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#17614f]/10 text-[10px] font-bold text-[#17614f]">{step}</span>;
-                })()}
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#17614f]">Суть за 30 секунд</p>
+
+          {/* Краткая выжимка */}
+          {article.sections.find((s) => s.title === "Суть за 30 секунд") && (
+            <aside className="mt-8 rounded-2xl border-l-4 border-[#17614f] bg-[#f2fff9] px-6 py-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#17614f]">Краткая выжимка</p>
+              <div className="mt-3 space-y-3 text-[1.03rem] leading-[1.8] text-[#1d3b34]">
+                {article.sections
+                  .find((s) => s.title === "Суть за 30 секунд")
+                  ?.paragraphs.map((paragraph, index) => (
+                    <p key={`essence-${index}`}>{renderGlossaryInline(paragraph, articlePath, "section-essence")}</p>
+                  ))}
               </div>
-              <h2 className="mt-1 font-serif text-2xl text-[#10382f]">Краткая выжимка</h2>
-            </div>
-          </summary>
-          <div className="mt-5 space-y-4 text-lg leading-8 text-[#1d3b34]">
-            {article.sections
-              .find((section) => section.title === "Суть за 30 секунд")
-              ?.paragraphs.map((paragraph, index) => (
-                <p key={`section-essence-${index}`}>{renderGlossaryInline(paragraph, articlePath, "section-essence")}</p>
-              ))}
-          </div>
-        </details>
-        
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[var(--text-soft)]">
-          <Link href={`/authors/${article.authorSlug}`} className="font-semibold text-[var(--text)] hover:underline">
-            {article.author}
-          </Link>
-          <span className="opacity-30">·</span>
-          <time dateTime={article.date}>{article.date}</time>
-          <span className="opacity-30">·</span>
-          <span>{article.readingTime}</span>
-        </div>
+            </aside>
+          )}
 
-<div className="mt-10 space-y-7" id="content">
+          {/* Sections — full width */}
+          <div className="mt-10 space-y-10" id="content">
           {sections.map((section, index) => {
-            const sectionId = `section-${index + 1}`;
-            const dialogueItems = isDialogueTitle(section.title) ? buildDialogueItems(article, articlePath, sectionId, section) : [];
-            const scenarioOutcomes = isScenarioTitle(section.title) ? getScenarioOutcomes(article, section) : [];
-            const checklistItems = isChecklistTitle(section.title) ? extractChecklistItems(section, article) : [];
+                const sectionId = `section-${index + 1}`;
+                const num = index + 1;
 
-            if (section.title === "Суть за 30 секунд") return null;
-            if (isModelTitle(section.title)) return <div key={sectionId}>{renderModelSection(section, articlePath, sectionId, index + 1)}</div>;
-            if (isBadAdviceTitle(section.title)) return <div key={sectionId}>{renderBadAdviceSection(section, articlePath, sectionId, index + 1)}</div>;
-            if (isResearchTitle(section.title)) {
-              return (
-                <details open id={sectionId} key={sectionId} className="group scroll-mt-24 rounded-[2rem] border border-[#b3c8e8] bg-[#f0f6ff] p-6 shadow-[0_18px_44px_rgba(30,80,160,0.07)]">
-                  <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-                    <ChevronRight className="h-6 w-6 shrink-0 text-[#2563a8] transition-transform duration-200 group-open:rotate-90" />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#2563a8]/10 text-[10px] font-bold text-[#2563a8]">{index + 1}</span>
-                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2563a8]">Раздел</p>
-                      </div>
-                      <h2 className="mt-1 font-serif text-2xl text-[#1a3a6b]">🧠 {section.title}</h2>
+                if (section.title === "Суть за 30 секунд") return null;
+                if (isSourcesTitle(section.title)) return null; // rendered separately below
+
+                // Interactive / highlighted blocks — keep as card inserts
+                if (isDialogueTitle(section.title)) {
+                  const dialogueItems = buildDialogueItems(article, articlePath, sectionId, section);
+                  return <ArticleDialogueBlock key={sectionId} title={section.title} items={dialogueItems} />;
+                }
+                if (isScenarioTitle(section.title)) {
+                  const scenarioOutcomes = getScenarioOutcomes(article, section);
+                  return (
+                    <ArticleScenariosBlock
+                      key={sectionId}
+                      title={section.title}
+                      action={getScenarioAction(article)}
+                      outcomes={scenarioOutcomes.map((outcome) => outcome.replace(/^Либо\s*/u, ""))}
+                    />
+                  );
+                }
+                if (isChecklistTitle(section.title)) {
+                  const checklistItems = extractChecklistItems(section, article);
+                  return <ArticleChecklist key={sectionId} slug={article.slug} title={section.title} items={checklistItems} />;
+                }
+
+                // Text-flow blocks — no card, just numbered heading + prose
+                if (isModelTitle(section.title)) {
+                  return (
+                    <div key={sectionId}>
+                      {renderTextSection(section, articlePath, sectionId, num, "#5d6fa6")}
                     </div>
-                  </summary>
-                  <div className="mt-4 space-y-3 pl-9">
-                    {section.paragraphs.map((paragraph, pIndex) => (
-                      <p key={pIndex} className="leading-relaxed text-[var(--text)]">
-                        {renderGlossaryInline(paragraph, articlePath, sectionId)}
-                      </p>
+                  );
+                }
+                if (isBadAdviceTitle(section.title)) {
+                  return <div key={sectionId}>{renderBadAdviceSection(section, articlePath, sectionId, num)}</div>;
+                }
+                if (isResearchTitle(section.title)) {
+                  return <div key={sectionId}>{renderResearchSection(section, articlePath, sectionId, num)}</div>;
+                }
+
+                // Default text section
+                return (
+                  <div key={sectionId}>
+                    {renderTextSection(section, articlePath, sectionId, num)}
+                  </div>
+                );
+              })}
+
+              {/* Safety note — subtle left-border insert */}
+              {article.safetyNote && (
+                <aside className="rounded-r-xl border-l-4 border-[#e7bd9f] bg-[#fff8f0] py-4 pl-5 pr-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--accent-deep)]">Важная оговорка</p>
+                  <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">
+                    {renderGlossaryInline(article.safetyNote, articlePath, "section-safety")}
+                  </p>
+                </aside>
+              )}
+
+              {/* FAQ — accordion card */}
+              {article.faq.length > 0 && (
+                <section className="rounded-2xl border border-[#e7d9bf] bg-[#fff8ec] p-6">
+                  <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Вопросы и ответы</h2>
+                  <div className="mt-4 space-y-3">
+                    {article.faq.map((item) => (
+                      <details key={item.question} className="group/faq rounded-xl border border-[#ecdcc0] bg-white/90 p-4">
+                        <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
+                          <ChevronRight className="h-4 w-4 shrink-0 text-[var(--accent-deep)] transition-transform duration-200 group-open/faq:rotate-90" />
+                          <h3 className="font-semibold">{item.question}</h3>
+                        </summary>
+                        <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">{item.answer}</p>
+                      </details>
                     ))}
                   </div>
+                </section>
+              )}
+
+              <InteractiveQuiz slug={article.slug} quiz={article.quiz} />
+
+              {/* Sources block */}
+              {sections.some((s) => isSourcesTitle(s.title)) && (
+                <details className="group rounded-2xl border border-[var(--line)] bg-[var(--bg)]">
+                  <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 marker:content-none">
+                    <ChevronRight className="h-4 w-4 shrink-0 text-[var(--text-soft)] transition-transform duration-200 group-open:rotate-90" />
+                    <span className="text-sm font-semibold text-[var(--text-soft)]">Источники</span>
+                  </summary>
+                  <ul className="space-y-2 px-5 pb-5 pt-1">
+                    {sections
+                      .find((s) => isSourcesTitle(s.title))
+                      ?.paragraphs.map((source, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--text-soft)]">
+                          <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--text-soft)]/40" />
+                          <span>{renderSourceText(source)}</span>
+                        </li>
+                      ))}
+                  </ul>
                 </details>
-              );
-            }
-            if (isDialogueTitle(section.title)) {
-              return <ArticleDialogueBlock key={sectionId} title={section.title} items={dialogueItems} />;
-            }
-            if (isScenarioTitle(section.title)) {
-              return (
-                <ArticleScenariosBlock
-                  key={sectionId}
-                  title={section.title}
-                  action={getScenarioAction(article)}
-                  outcomes={scenarioOutcomes.map((outcome) => outcome.replace(/^Либо\s*/u, ""))}
-                />
-              );
-            }
-            if (isChecklistTitle(section.title)) {
-              return <ArticleChecklist key={sectionId} slug={article.slug} title={section.title} items={checklistItems} />;
-            }
+              )}
 
-            return (
-              <details
-                open
-                id={sectionId}
-                key={sectionId}
-                className={`group scroll-mt-24 rounded-[2rem] border p-6 ${
-                  section.title === "Что помогает"
-                    ? "border-[#b7ded0] bg-[#f2fff9] shadow-[0_18px_44px_rgba(23,97,79,0.08)]"
-                    : "border-[var(--line)] bg-[var(--bg)]"
-                }`}
-              >
-                <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-                  <ChevronRight className={`h-6 w-6 transition-transform duration-200 group-open:rotate-90 shrink-0 ${section.title === "Что помогает" ? "text-[#17614f]" : "text-[var(--text-soft)]"}`} />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${section.title === "Что помогает" ? "bg-[#17614f]/10 text-[#17614f]" : "bg-[var(--text-soft)]/10 text-[var(--text-soft)]"}`}>{index + 1}</span>
-                      <p className={`text-xs font-semibold uppercase tracking-[0.18em] ${section.title === "Что помогает" ? "text-[#17614f]" : "text-[var(--text-soft)]"}`}>Раздел</p>
-                    </div>
-                    <h2 className={`mt-1 font-serif text-2xl ${section.title === "Что помогает" ? "text-[#17614f]" : "text-[var(--text)]"}`}>{section.title}</h2>
-                  </div>
-                </summary>
-                <div className="mt-5 space-y-4 text-[1.03rem] leading-8 text-[var(--text-soft)]">
-                  {renderDefaultParagraphs(section.paragraphs, articlePath, sectionId)}
-                </div>
-              </details>
-            );
-          })}
-
-          {article.safetyNote ? (
-            <details open className="group rounded-2xl border border-[#e7bd9f] bg-[#fff4ea] p-6">
-              <summary className="flex cursor-pointer list-none items-center gap-3 marker:content-none outline-none">
-                <ChevronRight className="h-6 w-6 text-[var(--accent-deep)] transition-transform duration-200 group-open:rotate-90 shrink-0" />
-                <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Важная оговорка</h2>
-              </summary>
-              <div className="mt-4 text-sm leading-6 text-[var(--text-soft)]">{renderGlossaryInline(article.safetyNote, articlePath, "section-safety")}</div>
-            </details>
-          ) : null}
-
-          <section className="rounded-2xl border border-[#e7d9bf] bg-[#fff8ec] p-6">
-            <details open className="group">
-              <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
-                <ChevronRight className="h-5 w-5 text-[var(--accent-deep)] transition-transform duration-200 group-open:rotate-90" />
-                <h2 className="font-serif text-2xl text-[var(--accent-deep)]">Вопросы и ответы</h2>
-              </summary>
-              <div className="mt-4 space-y-3">
-                {article.faq.map((item) => (
-                  <details key={item.question} className="group/faq rounded-xl border border-[#ecdcc0] bg-white/90 p-4">
-                    <summary className="flex cursor-pointer list-none items-center gap-2 marker:content-none">
-                      <ChevronRight className="h-4 w-4 shrink-0 text-[var(--accent-deep)] transition-transform duration-200 group-open/faq:rotate-90" />
-                      <h3 className="font-semibold">{item.question}</h3>
-                    </summary>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </details>
-          </section>
-
-          <InteractiveQuiz slug={article.slug} quiz={article.quiz} />
-
-          <RelatedArticles articles={relatedArticles} categoryTitle={category?.title} />
-        </div>
-        </div>
+              <RelatedArticles articles={relatedArticles} categoryTitle={category?.title} />
+          </div>{/* end sections */}
+        </div>{/* end content */}
       </article>
     </div>
   );

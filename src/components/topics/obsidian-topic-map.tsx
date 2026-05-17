@@ -92,7 +92,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
         </button>
       </div>
 
-      <div className="mx-auto grid min-h-[calc(100vh-74px)] w-full grid-cols-1 border-y border-[var(--line)] lg:grid-cols-[320px_minmax(0,1fr)_360px]">
+      <div className="mx-auto grid min-h-[calc(100vh-74px)] w-full grid-cols-1 border-y border-[var(--line)] lg:grid-cols-[280px_minmax(0,1fr)_300px] xl:grid-cols-[300px_minmax(0,1fr)_320px] 2xl:grid-cols-[320px_minmax(0,1fr)_360px]">
         <aside
           className={[
             "border-r border-[rgba(255,255,255,0.45)] bg-white/45 shadow-[0_18px_40px_rgba(111,45,26,0.08)] backdrop-blur-2xl transition-all duration-300",
@@ -225,7 +225,7 @@ export function ObsidianTopicMap({ articles, categories }: ObsidianTopicMapProps
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, y: -10, filter: "blur(6px)" }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className={`mx-auto max-w-3xl px-6 py-10 md:px-10 ${isUpdatedArticle(selectedArticle.slug) ? "rounded-2xl border border-emerald-400/80 bg-emerald-50/20" : ""}`}
+              className={`mx-auto w-full max-w-4xl px-6 py-10 md:px-12 xl:max-w-5xl ${isUpdatedArticle(selectedArticle.slug) ? "rounded-2xl border border-emerald-400/80 bg-emerald-50/20" : ""}`}
             >
               <div className="mb-7 hidden flex-wrap items-center gap-2 lg:flex">
                 {selectedArticle.tags.slice(0, 4).map((tag) => (

@@ -17,16 +17,16 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-white/70 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="shrink-0 font-serif text-xl font-bold text-[var(--accent-deep)] leading-none">
+      <div className="mx-auto flex w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] items-center justify-between gap-4 px-6 py-4">
+        <Link href="/" className="shrink-0 font-serif text-3xl font-bold text-[var(--accent-deep)] leading-none xl:text-4xl">
           RunPsy
         </Link>
-        <nav className="hidden flex-1 items-center gap-1 md:flex">
+        <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              className={`rounded-full px-5 py-3 text-lg font-medium transition xl:text-xl xl:px-6 ${
                 pathname === item.href
                   ? "bg-[var(--bg-soft)] text-[var(--text)]"
                   : "text-[var(--text-soft)] hover:bg-[var(--bg-soft)] hover:text-[var(--text)]"
@@ -40,7 +40,7 @@ export function Header() {
         <div className="hidden md:block">
           <Link
             href="/tests"
-            className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+            className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-lg font-semibold transition xl:text-xl xl:px-7 ${
               pathname === "/tests"
                 ? "bg-[var(--accent-deep)] text-white shadow-md"
                 : "bg-[var(--accent)] text-white shadow-sm hover:bg-[var(--accent-deep)] hover:shadow-md"

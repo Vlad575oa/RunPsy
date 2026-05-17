@@ -202,12 +202,12 @@ export function ArticleCard({ article, highlighted = false }: { article: Article
           </div>
 
           {/* Заголовок */}
-          <h3 className={`mt-3 font-[var(--font-lora)] text-sm font-semibold leading-snug sm:text-base ${theme.accent}`}>
+          <h3 className={`mt-3 font-[var(--font-lora)] text-sm font-semibold leading-snug sm:text-base xl:text-lg ${theme.accent}`}>
             {article.title}
           </h3>
 
           {/* Превью */}
-          <p className="mt-2 text-xs leading-5 text-[var(--text-soft)] sm:text-sm sm:leading-6">
+          <p className="mt-2 text-xs leading-5 text-[var(--text-soft)] sm:text-sm sm:leading-6 xl:text-base xl:leading-7">
             {preview}{preview.length >= 90 ? "…" : ""}
           </p>
         </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="border-t border-[var(--line)] bg-white/80 backdrop-blur-xl">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 px-6 py-10 md:grid-cols-3">
+      <div className="mx-auto grid w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] gap-8 px-6 py-10 md:grid-cols-3">
         <div>
           <h2 className="font-serif text-xl text-[var(--accent-deep)]">RunPsy</h2>
           <p className="mt-3 text-sm leading-6 text-[var(--text-soft)]">
@@ -23,7 +23,6 @@ export function Footer() {
                 +7 (926) 317-72-26
               </a>
             </p>
-            <p>Правообладатель: Олейник Владислав Александрович</p>
           </div>
         </div>
         <div>
@@ -48,7 +47,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-[var(--line)]">
-        <div className="mx-auto w-full max-w-6xl px-6 py-4 text-sm text-[var(--text-soft)]">
+        <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-6 py-4 text-sm text-[var(--text-soft)]">
           © 2026, Олейник Владислав Александрович
         </div>
       </div>
