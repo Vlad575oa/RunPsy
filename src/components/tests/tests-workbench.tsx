@@ -356,15 +356,6 @@ export function TestsWorkbench({ tests, onClose }: Props) {
           </div>
         </div>
 
-        {/* Score bars */}
-        <div className="rounded-2xl border border-[var(--line)] bg-white p-5 shadow-sm">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-soft)]">Три измерения</p>
-          <div className="space-y-4">
-            <ScoreBar label="Состояние сейчас" pct={scoreA} color="var(--accent)" />
-            <ScoreBar label="Устойчивый паттерн" pct={scoreB} color="#5d6fa6" />
-            <ScoreBar label="Контекст-триггеры" pct={scoreC} color="#1a6b45" />
-          </div>
-        </div>
 
         {/* Trigger → Reaction → Help */}
         <div className="grid gap-3 sm:grid-cols-3">
@@ -476,7 +467,7 @@ export function TestsWorkbench({ tests, onClose }: Props) {
             {(["A", "B", "C"] as const).map((s, i) => (
               <div
                 key={s}
-                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition ${
+                className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold transition xl:text-sm xl:px-4 xl:py-2 ${
                   currentStage === s
                     ? "bg-[var(--accent)] text-white"
                     : stageIndex > i
@@ -485,7 +476,7 @@ export function TestsWorkbench({ tests, onClose }: Props) {
                 }`}
               >
                 <span>{i + 1}</span>
-                <span className="hidden sm:inline">{["Состояние", "Паттерн", "Триггеры"][i]}</span>
+                <span className="hidden sm:inline xl:text-sm">{["Состояние", "Паттерн", "Триггеры"][i]}</span>
               </div>
             ))}
           </div>

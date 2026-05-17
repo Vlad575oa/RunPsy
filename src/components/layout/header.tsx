@@ -17,7 +17,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--line)] bg-white/70 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] items-center justify-between gap-4 px-6 py-4">
+      <div className="mx-auto flex w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] items-center justify-between gap-4 px-6 py-4 xl:px-12 2xl:px-20">
         <Link href="/" className="shrink-0 font-serif text-3xl font-bold text-[var(--accent-deep)] leading-none xl:text-4xl">
           RunPsy
         </Link>

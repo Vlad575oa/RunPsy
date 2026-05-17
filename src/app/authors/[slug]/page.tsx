@@ -28,7 +28,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   const articles = (await getPublishedArticlesFromStore()).filter((article) => article.author === author.name);
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-6 py-10">
+    <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-6 xl:px-12 2xl:px-20 py-10">
       <h1 className="font-serif text-4xl">{author.name}</h1>
       <p className="mt-2 text-sm text-[var(--text-soft)]">{author.role}</p>
       <p className="mt-4 max-w-3xl text-sm leading-7 text-[var(--text-soft)]">{author.bio}</p>

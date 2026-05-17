@@ -31,7 +31,7 @@ export default function DialoguesPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-6 py-10">
+    <div className="mx-auto w-full max-w-[1400px] xl:max-w-[1600px] 2xl:max-w-[1900px] px-6 xl:px-12 2xl:px-20 py-10">
       <Script id="schema-dialogues-collection" type="application/ld+json">
         {JSON.stringify(itemListSchema)}
       </Script>

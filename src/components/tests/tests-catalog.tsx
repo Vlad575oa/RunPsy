@@ -310,7 +310,7 @@ function TestCard({
       </h3>
       <p className="mt-2 line-clamp-2 text-xs leading-5 text-[var(--text-soft)]">{test.description}</p>
       <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[var(--accent)]">
-        Пройти навигатор
+        Пройти тест
         <ChevronRight className="h-3.5 w-3.5" />
       </div>
     </button>
