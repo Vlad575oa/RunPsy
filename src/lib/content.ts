@@ -183,6 +183,7 @@ export const articles: Article[] = allArticleSeeds.map((seed) => {
     date: override?.date ?? "2026-05-04",
     updated: override?.updated,
     author: authors[0].name,
+    authorSlug: authors[0].slug,
     category: seed.category,
     tags: override?.tags ?? seed.tags,
     readingTime,
